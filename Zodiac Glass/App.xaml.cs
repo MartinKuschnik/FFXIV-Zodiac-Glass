@@ -6,6 +6,7 @@
     using System.Drawing;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Threading;
     using System.Windows;
     using System.Windows.Threading;
@@ -15,6 +16,7 @@
     using MenuItem = System.Windows.Forms.MenuItem;
     using NotifyIcon = System.Windows.Forms.NotifyIcon;
     using ToolStripMenuItem = System.Windows.Forms.ToolStripMenuItem;
+    using Settings = ZodiacGlass.Properties.Settings;
 
     public partial class App : Application
     {
@@ -25,7 +27,7 @@
         private readonly Mutex mutex = new Mutex(true, "ZodiacGlass");
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private bool isMutexOwner;
+        private readonly Log log = new Log();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<Process, OverlayWindow> overlays = new Dictionary<Process, OverlayWindow>();
@@ -42,45 +44,72 @@
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly FFXIVConfig xivConfig = new FFXIVConfig();
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private bool isMutexOwner;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private MemoryMap currentMemoryMap;
+
         protected override void OnStartup(StartupEventArgs e)
         {
-            // ensure one one instance of app is open
-            if (mutex.WaitOne(TimeSpan.Zero, true))
+            try
             {
-                this.isMutexOwner = true;
+                // ensure one one instance of app is open
+                if (mutex.WaitOne(TimeSpan.Zero, true))
+                {
+                    this.isMutexOwner = true;
 
-                base.OnStartup(e);
+                    base.OnStartup(e);
 
-                this.processObserver.ProcessStarted += this.OnProcessStarted;
+                    try
+                    {
+                        this.currentMemoryMap = Settings.Default.MemoryMap ?? MemoryMap.Default;
+                    }
+                    catch (Exception ex)
+                    {
+                        this.currentMemoryMap = MemoryMap.Default;
+                        this.log.WriteException("Reading MemoryMap failed.", ex);
+                    }
 
-                this.AttachToExistingProcesses();
+                    this.UpdateMemoryMap();
+                    
+                    this.processObserver.ProcessStarted += this.OnProcessStarted;
 
-                this.ConfigureNotifyIcon();
+                    this.AttachToExistingProcesses();
+
+                    this.ConfigureNotifyIcon();
+                }
+                else
+                {
+                    MessageBox.Show("Only one instance of Zodiac Glass be run!", "Zodiac Glass", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                    this.log.Write(LogLevel.Info, "Zodiac Glass already running. Application will be closed.");
+
+                    this.Shutdown();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Only one instance of Zodiac Glass be run!", "Zodiac Glass", MessageBoxButton.OK, MessageBoxImage.Warning);
-
-                this.Shutdown();
+                this.log.WriteException("Startup failed.", ex);
+                throw;
             }
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            if (this.isMutexOwner)
-                mutex.ReleaseMutex();
-
-            this.processObserver.Dispose();
-            this.xivConfig.Dispose();
-
             foreach (Process process in this.overlays.Keys.ToArray())
                 this.DestroyOverlay(process);
 
+            this.processObserver.Dispose();
+            this.xivConfig.Dispose();
+            this.log.Dispose();
+
+            if (this.isMutexOwner)
+                mutex.ReleaseMutex();
+
             base.OnExit(e);
         }
-
-        #region NotifyIcon
-
+        
         private void ConfigureNotifyIcon()
         {
             const string imageRuiFormat = "pack://application:,,,/Zodiac Glass;component/Resources/{0}";
@@ -128,23 +157,50 @@
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "exit.ico"))).Stream);
             newItem.Click += (s, e) => this.Shutdown();
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
-
-            XmlSerializer seri = new XmlSerializer(typeof(MemoryMap));
-
-            using (FileStream fs = File.OpenWrite(@"C:\Users\Martin\Desktop\MemoryMap.xml"))
-            {
-                seri.Serialize(fs, MemoryMap.Default);
-            }
-
-
         }
-
-        #endregion
-
-        private MemoryMap DownloadNewMemoryMap()
+        
+        private bool UpdateMemoryMap()
         {
+            try
+            {
+                WebRequest request = HttpWebRequest.Create("https://raw.githubusercontent.com/InvisibleShield/FFXIV-Zodiac-Glass/master/CurrentMemoryMap.xml");
 
+                using (Stream responseStream = request.GetResponse().GetResponseStream())
+                {
+                    XmlSerializer seri = new XmlSerializer(typeof(MemoryMap));
+
+                    MemoryMap newMemMap = seri.Deserialize(responseStream) as MemoryMap;
+
+                    if (newMemMap != null && !newMemMap.Equals(this.currentMemoryMap))
+                    {
+                        this.currentMemoryMap = newMemMap;
+
+                        try
+                        {
+                            Settings.Default.MemoryMap = newMemMap;
+                            Settings.Default.Save();
+
+                            this.log.Write(LogLevel.Info, "MemoryMap updated.");
+                        }
+                        catch (Exception ex)
+                        {
+                            this.log.WriteException("Saving new MemoryMap failed.", ex);
+                        }
+
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                this.log.WriteException("Updating MemoryMap failed.", ex);
+                return false;
+            }
         }
+
+        #region Overlay
 
         private void AttachToExistingProcesses()
         {
@@ -154,22 +210,24 @@
 
         private void CreateOverlay(Process process)
         {
-            OverlayWindow overlay = new OverlayWindow(process);
+            this.log.Write(LogLevel.Trace, string.Format("Creating overlay for process {0}.", process.Id));
 
-            process.EnableRaisingEvents = true;
-            process.Exited += this.OnProcessExited;
+            try
+            {
+                OverlayWindow overlay = new OverlayWindow(process);
 
-            overlay.Show();
+                process.EnableRaisingEvents = true;
+                process.Exited += this.OnProcessExited;
 
-            this.overlays.Add(process, overlay);
+                overlay.Show();
+                this.overlays.Add(process, overlay);
 
-            this.CheckGameIsInWindowMode(process);
-        }
-
-        private void CheckGameIsInWindowMode(Process process)
-        {
-            if (this.xivConfig.ScreenMode != ScreenMode.FramelessWindow)
-                MessageBox.Show("FINAL FANTASY XIV have to run into frameless window mode!", "Frameless window mode required!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                this.CheckGameIsInWindowMode(process);
+            }
+            catch (Exception ex)
+            {
+                this.log.WriteException("Creating overlay failed.", ex);
+            }
         }
 
         private bool DestroyOverlay(Process process)
@@ -179,6 +237,8 @@
             if (this.overlays.TryGetValue(process, out overlay))
             {
                 process.Exited -= this.OnProcessExited;
+
+                this.log.Write(LogLevel.Trace, string.Format("Destroying overlay for process {0}.", process.Id));
 
                 overlay.Close();
 
@@ -201,5 +261,17 @@
             if (process != null)
                 dispatcher.Invoke((ThreadStart)(() => this.DestroyOverlay(process)));
         }
+
+        private void CheckGameIsInWindowMode(Process process)
+        {
+            ScreenMode curScreanMode = this.xivConfig.ScreenMode;
+
+            this.log.Write(LogLevel.Info, string.Format("CurrentScreenMode: {0}", curScreanMode));
+
+            if (curScreanMode != ScreenMode.FramelessWindow)
+                MessageBox.Show("FINAL FANTASY XIV have to run into frameless window mode!", "Frameless window mode required!", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+        #endregion
     }
 }

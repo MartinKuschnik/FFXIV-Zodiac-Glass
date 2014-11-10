@@ -83,6 +83,8 @@
     <Compile Include="FFXIV\NovusWeapon.cs" />
     <Compile Include="Misc\DesignTimeZodiacGlass.cs" />
     <Compile Include="Misc\IVirtualZodiacGlass.cs" />
+    <Compile Include="Misc\Log.cs" />
+    <Compile Include="Misc\LogLevel.cs" />
     <Compile Include="Misc\MemoryMap.cs" />
     <Compile Include="Misc\NativeMethods.cs" />
     <Compile Include="Misc\ProcessAccessFlags.cs" />

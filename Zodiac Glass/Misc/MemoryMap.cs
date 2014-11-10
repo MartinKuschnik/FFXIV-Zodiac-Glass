@@ -1,6 +1,7 @@
 ﻿namespace ZodiacGlass
 {
     using System;
+    using System.Linq;
 
     public class MemoryMap
     {
@@ -30,7 +31,7 @@
         public override bool Equals(object obj)
         {
             MemoryMap other = obj as MemoryMap;
-            return other != null && this.EquippedMainHandOffset == other.EquippedMainHandOffset && this.EquippedOffHandOffset == other.EquippedOffHandOffset && this.SpiritBondOffset == other.SpiritBondOffset && object.Equals(this.InventoryAddress, other.InventoryAddress);
+            return other != null && this.EquippedMainHandOffset == other.EquippedMainHandOffset && this.EquippedOffHandOffset == other.EquippedOffHandOffset && this.SpiritBondOffset == other.SpiritBondOffset && Enumerable.SequenceEqual(this.InventoryAddress, other.InventoryAddress);
         }
     }
 }

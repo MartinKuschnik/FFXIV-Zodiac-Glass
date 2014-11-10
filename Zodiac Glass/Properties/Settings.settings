@@ -5,7 +5,7 @@
     <Setting Name="OverlayPosition" Type="System.Drawing.Point" Scope="User">
       <Value Profile="(Default)">0, 0</Value>
     </Setting>
-    <Setting Name="MemoryMap" Type="ZodiacGlass.MemoryMap" Scope="Application">
+    <Setting Name="MemoryMap" Type="ZodiacGlass.MemoryMap" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

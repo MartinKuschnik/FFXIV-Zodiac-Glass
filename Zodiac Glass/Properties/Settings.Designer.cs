@@ -35,11 +35,14 @@ namespace ZodiacGlass.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         public global::ZodiacGlass.MemoryMap MemoryMap {
             get {
                 return ((global::ZodiacGlass.MemoryMap)(this["MemoryMap"]));
+            }
+            set {
+                this["MemoryMap"] = value;
             }
         }
     }
