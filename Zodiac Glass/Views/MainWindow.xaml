@@ -1,0 +1,11 @@
+﻿<Window x:Class="ZodiacGlass.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow"
+        Height="350"
+        Width="525"
+        Icon="pack://application:,,,/Zodiac Glass;component/Resources/ZodiacGlass.ico">
+    <Grid>
+        
+    </Grid>
+</Window>
