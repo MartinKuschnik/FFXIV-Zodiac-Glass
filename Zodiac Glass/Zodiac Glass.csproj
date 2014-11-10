@@ -171,9 +171,6 @@
     <Resource Include="Resources\About.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ddd.vb" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="CurrentMemoryMap.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
