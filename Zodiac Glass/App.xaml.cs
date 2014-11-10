@@ -141,6 +141,11 @@
 
         #endregion
 
+        private MemoryMap DownloadNewMemoryMap()
+        {
+
+        }
+
         private void AttachToExistingProcesses()
         {
             foreach (Process process in Process.GetProcessesByName(App.XIVProcessName))
