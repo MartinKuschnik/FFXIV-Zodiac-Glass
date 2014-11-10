@@ -13,18 +13,6 @@
         #region Fields
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly static IntPtr[] InventoryAddress = new IntPtr[] { (IntPtr)17019680, IntPtr.Zero };
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private const int EquippedMainHandOffset = 6536;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private const int EquippedOffHandOffset = 6600;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private const int SpiritBondOffset = 8;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Process process;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -36,23 +24,29 @@
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IntPtr equippedOffHandAddress;
 
+        private readonly MemoryMap memMep;
+
         #endregion
 
         #region Constructors
 
-        public VirtualZodiacGlass(Process process)
+        public VirtualZodiacGlass(Process process, MemoryMap memMep)
         {
             if (process == null)
-                throw new ArgumentNullException(MethodBase.GetCurrentMethod().GetParameters().First().Name);
+                throw new ArgumentNullException(MethodBase.GetCurrentMethod().GetParameters()[0].Name);
+
+            if (memMep == null)
+                throw new ArgumentNullException(MethodBase.GetCurrentMethod().GetParameters()[1].Name);
 
             this.process = process;
+            this.memMep = memMep;
 
             if (!this.process.HasExited)
             {
                 this.processHandel = NativeMethods.OpenProcess(ProcessAccessFlags.VirtualMemoryRead | ProcessAccessFlags.QueryInformation, false, this.process.Id);
 
-                this.equippedMainHandAddress = this.CalculateAddress(VirtualZodiacGlass.EquippedMainHandOffset);
-                this.equippedOffHandAddress = this.CalculateAddress(VirtualZodiacGlass.EquippedOffHandOffset);
+                this.equippedMainHandAddress = this.CalculateAddress(this.memMep.EquippedMainHandOffset);
+                this.equippedOffHandAddress = this.CalculateAddress(this.memMep.EquippedOffHandOffset);
             }
         }
 
@@ -60,12 +54,12 @@
 
         public int GetEquippedMainHandLightAmount()
         {
-            return this.ReadInt16(IntPtr.Add(this.equippedMainHandAddress, VirtualZodiacGlass.SpiritBondOffset));
+            return this.ReadInt16(IntPtr.Add(this.equippedMainHandAddress, this.memMep.SpiritBondOffset));
         }
 
         public int GetEquippedOffHandLightAmount()
         {
-            return this.ReadInt16(IntPtr.Add(this.equippedOffHandAddress, VirtualZodiacGlass.SpiritBondOffset));
+            return this.ReadInt16(IntPtr.Add(this.equippedOffHandAddress, this.memMep.SpiritBondOffset));
         }
 
         public int GetEquippedMainHandID()
@@ -84,7 +78,7 @@
         {
             IntPtr addr = this.process.MainModule.BaseAddress;
 
-            foreach (IntPtr addrPointer in VirtualZodiacGlass.InventoryAddress)
+            foreach (IntPtr addrPointer in this.memMep.InventoryAddress)
                 addr = (IntPtr)this.ReadInt32(IntPtr.Add(addr, (int)addrPointer));
 
             return IntPtr.Add(addr, offset);

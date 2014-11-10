@@ -34,7 +34,7 @@ namespace ZodiacGlass
             this.process = process;
 
             if (this.process != null)
-                this.glass = new VirtualZodiacGlass(process);
+                this.glass = new VirtualZodiacGlass(process, ZodiacGlass.Properties.Settings.Default.MemoryMap ?? MemoryMap.Default);
 
             InitializeComponent();
 

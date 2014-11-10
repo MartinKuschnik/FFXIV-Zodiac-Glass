@@ -34,5 +34,13 @@ namespace ZodiacGlass.Properties {
                 this["OverlayPosition"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::ZodiacGlass.MemoryMap MemoryMap {
+            get {
+                return ((global::ZodiacGlass.MemoryMap)(this["MemoryMap"]));
+            }
+        }
     }
 }

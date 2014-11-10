@@ -2,47 +2,52 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Configuration;
-    using System.Data;
     using System.Diagnostics;
     using System.Drawing;
     using System.IO;
     using System.Linq;
-    using System.Threading.Tasks;
+    using System.Threading;
     using System.Windows;
     using System.Windows.Threading;
-    using NotifyIcon = System.Windows.Forms.NotifyIcon;
+    using System.Xml.Serialization;
+    using ZodiacGlass.FFXIV;
     using ContextMenu = System.Windows.Forms.ContextMenu;
     using MenuItem = System.Windows.Forms.MenuItem;
-    using System.Threading;
-    using ZodiacGlass.FFXIV;
+    using NotifyIcon = System.Windows.Forms.NotifyIcon;
+    using ToolStripMenuItem = System.Windows.Forms.ToolStripMenuItem;
 
-    /// <summary>
-    /// Interaktionslogik für "App.xaml"
-    /// </summary>
     public partial class App : Application
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private const string XIVProcessName = "ffxiv";
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Mutex mutex = new Mutex(true, "ZodiacGlass");
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool isMutexOwner;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dictionary<Process, OverlayWindow> overlays = new Dictionary<Process, OverlayWindow>();
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ProcessObserver processObserver = new ProcessObserver();
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly NotifyIcon notifyIcon = new NotifyIcon();
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly FFXIVConfig xivConfig = new FFXIVConfig();
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            // ensure one one instance of app is open
             if (mutex.WaitOne(TimeSpan.Zero, true))
             {
-                isMutexOwner = true;
+                this.isMutexOwner = true;
 
                 base.OnStartup(e);
 
@@ -62,7 +67,7 @@
 
         protected override void OnExit(ExitEventArgs e)
         {
-            if (isMutexOwner)
+            if (this.isMutexOwner)
                 mutex.ReleaseMutex();
 
             this.processObserver.Dispose();
@@ -74,26 +79,67 @@
             base.OnExit(e);
         }
 
+        #region NotifyIcon
+
         private void ConfigureNotifyIcon()
         {
-            Stream iconStream = Application.GetResourceStream(new Uri("pack://application:,,,/Zodiac Glass;component/Resources/ZodiacGlass.ico")).Stream;
+            const string imageRuiFormat = "pack://application:,,,/Zodiac Glass;component/Resources/{0}";
 
-            if (iconStream != null)
+            using (Stream iconStream = Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "ZodiacGlass.ico"))).Stream)
+            {
                 this.notifyIcon.Icon = new Icon(iconStream);
+            }
 
             this.notifyIcon.Visible = true;
 
-            this.notifyIcon.ContextMenu = new ContextMenu();
+            this.notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
 
-            MenuItem exitMenuItem = this.notifyIcon.ContextMenu.MenuItems.Add("Exit", this.OnExitContextMenuItemClicked);
+            if (!this.overlays.Any())
+                this.notifyIcon.ShowBalloonTip(2500, "Zodiac Glass started.", "Please start FINAL FANTASY XIV: A Realm Reborn to see the overlay.", System.Windows.Forms.ToolTipIcon.Info);
 
-            
+            ToolStripMenuItem newItem;
+
+            newItem = new ToolStripMenuItem("Bounus Light");
+            newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "reddit.png"))).Stream);
+            newItem.Click += (s, e) => Process.Start("http://www.reddit.com/live/tlfmtjl4fteo");
+            this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
+
+            newItem = new ToolStripMenuItem("Light Info");
+            newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "reddit.png"))).Stream);
+            newItem.Click += (s, e) => Process.Start("http://www.reddit.com/r/ffxiv/comments/2gm1ru/nexus_light_information/");
+            this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
+
+            newItem = new ToolStripMenuItem("About");
+            newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "about.ico"))).Stream);
+            string msg;
+            using (StreamReader sr = new StreamReader(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "About.txt"))).Stream))
+            {
+                msg = sr.ReadToEnd();
+            }
+            newItem.Click += (s, e) => MessageBox.Show(msg, "About Zodiac Glass", MessageBoxButton.OK, MessageBoxImage.Information);
+            this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
+
+            newItem = new ToolStripMenuItem("Donate");
+            newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "donate.ico"))).Stream);
+            newItem.Click += (s, e) => Process.Start("https://www.paypal.com/cgi-bin/webscr?hosted_button_id=5MGV57U5FL728&cmd=_s-xclick");
+            this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
+
+            newItem = new ToolStripMenuItem("Exit");
+            newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "exit.ico"))).Stream);
+            newItem.Click += (s, e) => this.Shutdown();
+            this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
+
+            XmlSerializer seri = new XmlSerializer(typeof(MemoryMap));
+
+            using (FileStream fs = File.OpenWrite(@"C:\Users\Martin\Desktop\MemoryMap.xml"))
+            {
+                seri.Serialize(fs, MemoryMap.Default);
+            }
+
+
         }
 
-        private void OnExitContextMenuItemClicked(object sender, EventArgs e)
-        {
-            this.Shutdown();
-        }
+        #endregion
 
         private void AttachToExistingProcesses()
         {
@@ -148,7 +194,7 @@
             Process process = sender as Process;
 
             if (process != null)
-                dispatcher.Invoke((ThreadStart)(() => this.DestroyOverlay(process)));   
+                dispatcher.Invoke((ThreadStart)(() => this.DestroyOverlay(process)));
         }
     }
 }

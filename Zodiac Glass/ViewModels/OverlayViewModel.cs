@@ -12,18 +12,29 @@ namespace ZodiacGlass
 {
     internal class OverlayViewModel : ViewModelBase
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private const int AdditionLifeTime = 20000;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private IVirtualZodiacGlass glass;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private DisplayMode mode;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private ZodiacGlassObserver observer;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool ignoreNextMainHandAddition;
+
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool ignoreNextOffHandAddition;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int mainHandAddition;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private int offHandAddition;
 
         public OverlayViewModel()

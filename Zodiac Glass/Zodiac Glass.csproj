@@ -83,6 +83,7 @@
     <Compile Include="FFXIV\NovusWeapon.cs" />
     <Compile Include="Misc\DesignTimeZodiacGlass.cs" />
     <Compile Include="Misc\IVirtualZodiacGlass.cs" />
+    <Compile Include="Misc\MemoryMap.cs" />
     <Compile Include="Misc\NativeMethods.cs" />
     <Compile Include="Misc\ProcessAccessFlags.cs" />
     <Compile Include="Misc\ProcessEventArgs.cs" />
@@ -93,21 +94,14 @@
     <Compile Include="Misc\WindowStyle.cs" />
     <Compile Include="Misc\WindowStyleEx.cs" />
     <Compile Include="Misc\ZodiacGlassObserver.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\OverlayViewModel.cs" />
     <Compile Include="Views\OverlayWindow.xaml.cs">
       <DependentUpon>OverlayWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Misc\VirtualZodiacGlass.cs" />
-    <Page Include="Views\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Views\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\OverlayWindow.xaml">
@@ -160,6 +154,27 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ZodiacGlass.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\exit.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\about.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\reddit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\donate.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\About.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ddd.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CurrentMemoryMap.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
