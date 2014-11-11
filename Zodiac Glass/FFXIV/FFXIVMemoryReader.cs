@@ -3,10 +3,11 @@
     using System;
     using System.Diagnostics;
     using System.Reflection;
+    using System.Runtime.InteropServices;
     using ZodiacGlass.FFXIV;
     using ZodiacGlass.Native;
 
-    internal class FFXIVMemoryReader :  IDisposable
+    internal unsafe class FFXIVMemoryReader :  IDisposable
     {
         #region Fields
 
@@ -15,6 +16,8 @@
         private readonly IntPtr processHandel;
 
         private readonly IntPtr equippedMainHandAddress;
+
+        private readonly FFXIVWeapon* mainHand;
 
         private readonly IntPtr equippedOffHandAddress;
 
@@ -38,7 +41,7 @@
             if (!this.process.HasExited)
             {
                 this.processHandel = NativeMethods.OpenProcess(ProcessAccessFlags.VirtualMemoryRead | ProcessAccessFlags.QueryInformation, false, this.process.Id);
-
+                
                 this.equippedMainHandAddress = this.CalculateAddress(this.memMep.EquippedMainHandOffset);
                 this.equippedOffHandAddress = this.CalculateAddress(this.memMep.EquippedOffHandOffset);
             }
@@ -47,6 +50,7 @@
         #endregion
 
         #region Functions
+
 
         public int GetEquippedMainHandLightAmount()
         {
@@ -80,18 +84,28 @@
 
         private short ReadInt16(IntPtr addr)
         {
-            byte[] array = new byte[3];
-            int num = 1;
-            NativeMethods.ReadProcessMemory(this.processHandel, addr, array, 2, ref num);
-            return BitConverter.ToInt16(array, 0);
+            byte[] buffer = new byte[sizeof(short)];
+            int readCount = 0;
+
+            NativeMethods.ReadProcessMemory(this.processHandel, addr, buffer, sizeof(short), ref readCount);
+
+            fixed (byte* p = &buffer[0])
+            {
+                return *(short*)p;
+            }
         }
 
         private int ReadInt32(IntPtr addr)
         {
-            byte[] array = new byte[5];
-            int num = 1;
-            NativeMethods.ReadProcessMemory(this.processHandel, addr, array, 4, ref num);
-            return BitConverter.ToInt32(array, 0);
+            byte[] buffer = new byte[sizeof(int)];
+            int readCount = 0;
+
+            NativeMethods.ReadProcessMemory(this.processHandel, addr, buffer, sizeof(int), ref readCount);
+
+            fixed (byte* p = &buffer[0])
+            {
+                return *(int*)p;
+            }
         }
 
         public void Dispose()
