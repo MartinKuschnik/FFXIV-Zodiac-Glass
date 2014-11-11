@@ -3,7 +3,7 @@
     using System;
     using System.Linq;
 
-    internal class FFXIVMemoryMap
+    public class FFXIVMemoryMap
     {
         private static readonly Lazy<FFXIVMemoryMap> _default = new Lazy<FFXIVMemoryMap>(() => new FFXIVMemoryMap() { InventoryAddress = new int[] { 0x103B320, 0 }, EquippedMainHandOffset = 0x1988, EquippedOffHandOffset = 0x19C8, SpiritBondOffset = 0x8 });
 
