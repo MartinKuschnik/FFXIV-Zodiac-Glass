@@ -1,6 +1,6 @@
 ﻿namespace ZodiacGlass.Native
 {
-    public enum WindowLong : int
+    internal enum WindowLong : int
     {
         GWL_WNDPROC = (-4),
         GWL_HINSTANCE = (-6),

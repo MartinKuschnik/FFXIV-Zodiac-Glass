@@ -1,4 +1,4 @@
-﻿namespace System.ComponentModel
+﻿namespace ZodiacGlass
 {
     using System;
     using System.ComponentModel;
@@ -12,7 +12,7 @@
     /// Stellt eine abstrakte Basisklasse für Viewmodels dar.
     /// </summary>
     #endregion
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    internal abstract class ViewModelBase : INotifyPropertyChanged
     {
         #region Eigenschaften
 
