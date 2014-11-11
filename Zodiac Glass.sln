@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zodiac Glass", "Zodiac Glass\Zodiac Glass.csproj", "{CEF678D2-4FF4-4FCE-8B03-CC1DB468521C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DFF7F443-C560-4685-ACA5-645EEF88D9C3}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		CurrentMemoryMap.xml = CurrentMemoryMap.xml
+		MEMMAP = MEMMAP
 	EndProjectSection
 EndProject
 Global

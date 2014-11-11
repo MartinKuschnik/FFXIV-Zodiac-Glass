@@ -186,7 +186,7 @@
         {
             try
             {
-                WebRequest request = HttpWebRequest.Create("https://raw.githubusercontent.com/InvisibleShield/FFXIV-Zodiac-Glass/master/CurrentMemoryMap.xml");
+                WebRequest request = HttpWebRequest.Create("https://raw.githubusercontent.com/InvisibleShield/FFXIV-Zodiac-Glass/master/MEMMAP");
 
                 using (Stream responseStream = request.GetResponse().GetResponseStream())
                 {
