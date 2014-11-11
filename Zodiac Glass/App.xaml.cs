@@ -11,12 +11,12 @@
     using System.Windows;
     using System.Windows.Threading;
     using System.Xml.Serialization;
+    using ZodiacGlass.Diagnostics;
     using ZodiacGlass.FFXIV;
-    using ContextMenu = System.Windows.Forms.ContextMenu;
-    using MenuItem = System.Windows.Forms.MenuItem;
     using NotifyIcon = System.Windows.Forms.NotifyIcon;
-    using ToolStripMenuItem = System.Windows.Forms.ToolStripMenuItem;
+    using Point = System.Drawing.Point;
     using Settings = ZodiacGlass.Properties.Settings;
+    using ToolStripMenuItem = System.Windows.Forms.ToolStripMenuItem;
 
     public partial class App : Application
     {
@@ -42,16 +42,18 @@
         private readonly NotifyIcon notifyIcon = new NotifyIcon();
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly FFXIVConfig xivConfig = new FFXIVConfig();
+        private FFXIVConfig xivConfig;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool isMutexOwner;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private MemoryMap currentMemoryMap;
+        private FFXIVMemoryMap currentMemoryMap;
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
             try
             {
                 // ensure one one instance of app is open
@@ -61,15 +63,9 @@
 
                     base.OnStartup(e);
 
-                    try
-                    {
-                        this.currentMemoryMap = Settings.Default.MemoryMap ?? MemoryMap.Default;
-                    }
-                    catch (Exception ex)
-                    {
-                        this.currentMemoryMap = MemoryMap.Default;
-                        this.log.WriteException("Reading MemoryMap failed.", ex);
-                    }
+                    this.ReadFFXIVConfig();
+
+                    this.LoadMemoryMap();
 
                     this.UpdateMemoryMap();
                     
@@ -94,22 +90,36 @@
                 throw;
             }
         }
-
+        
         protected override void OnExit(ExitEventArgs e)
         {
             foreach (Process process in this.overlays.Keys.ToArray())
                 this.DestroyOverlay(process);
 
             this.processObserver.Dispose();
-            this.xivConfig.Dispose();
             this.log.Dispose();
-
+            
             if (this.isMutexOwner)
                 mutex.ReleaseMutex();
 
             base.OnExit(e);
         }
-        
+
+        private void ReadFFXIVConfig()
+        {
+            try
+            {
+                using (FFXIVConfigReader reader = new FFXIVConfigReader(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"My Games\FINAL FANTASY XIV - A Realm Reborn\FFXIV.cfg")))
+                {
+                    this.xivConfig = reader.ReadConfig();
+                }
+            }
+            catch (Exception ex)
+            {
+                this.log.WriteException("Can't read FF XIV config file.", ex);
+            }
+        }
+
         private void ConfigureNotifyIcon()
         {
             const string imageRuiFormat = "pack://application:,,,/Zodiac Glass;component/Resources/{0}";
@@ -158,7 +168,20 @@
             newItem.Click += (s, e) => this.Shutdown();
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
         }
-        
+
+        private void LoadMemoryMap()
+        {
+            try
+            {
+                this.currentMemoryMap = Settings.Default.MemoryMap ?? FFXIVMemoryMap.Default;
+            }
+            catch (Exception ex)
+            {
+                this.log.WriteException("Reading MemoryMap failed.", ex);
+                this.currentMemoryMap = FFXIVMemoryMap.Default;
+            }
+        }
+
         private bool UpdateMemoryMap()
         {
             try
@@ -167,9 +190,9 @@
 
                 using (Stream responseStream = request.GetResponse().GetResponseStream())
                 {
-                    XmlSerializer seri = new XmlSerializer(typeof(MemoryMap));
+                    XmlSerializer seri = new XmlSerializer(typeof(FFXIVMemoryMap));
 
-                    MemoryMap newMemMap = seri.Deserialize(responseStream) as MemoryMap;
+                    FFXIVMemoryMap newMemMap = seri.Deserialize(responseStream) as FFXIVMemoryMap;
 
                     if (newMemMap != null && !newMemMap.Equals(this.currentMemoryMap))
                     {
@@ -219,10 +242,18 @@
                 process.EnableRaisingEvents = true;
                 process.Exited += this.OnProcessExited;
 
+                overlay.Left = Settings.Default.OverlayPosition.X;
+                overlay.Top = Settings.Default.OverlayPosition.Y;
+                overlay.DisplayMode = (OverlayDisplayMode)Settings.Default.OverlayDisplayMode;
+                overlay.MemoryReader = new FFXIVMemoryReader(process, this.currentMemoryMap);
+
+                overlay.LocationChanged += this.OnOverlayLocationChanged;
+                overlay.DisplayModeChanged += this.OnOverlayDisplayModeChanged;
+
                 overlay.Show();
                 this.overlays.Add(process, overlay);
 
-                this.CheckGameIsInWindowMode(process);
+                this.CheckGameWindowMode(process);
             }
             catch (Exception ex)
             {
@@ -238,6 +269,9 @@
             {
                 process.Exited -= this.OnProcessExited;
 
+                overlay.LocationChanged -= this.OnOverlayLocationChanged;
+                overlay.DisplayModeChanged -= this.OnOverlayDisplayModeChanged;
+
                 this.log.Write(LogLevel.Trace, string.Format("Destroying overlay for process {0}.", process.Id));
 
                 overlay.Close();
@@ -246,6 +280,28 @@
             }
 
             return false;
+        }
+
+        private void OnOverlayDisplayModeChanged(object sender, RoutedPropertyChangedEventArgs<OverlayDisplayMode> e)
+        {
+            OverlayWindow overlay = sender as OverlayWindow;
+
+            if (overlay != null)
+            {
+                Settings.Default.OverlayDisplayMode = (int)overlay.DisplayMode;
+                Settings.Default.Save();
+            }
+        }
+
+        private void OnOverlayLocationChanged(object sender, EventArgs e)
+        {
+            OverlayWindow overlay = sender as OverlayWindow;
+
+            if (overlay != null)            {
+
+                Settings.Default.OverlayPosition = new Point((int)overlay.Left, (int)overlay.Top);
+                Settings.Default.Save(); 
+            }
         }
 
         private void OnProcessStarted(object sender, ProcessEventArgs e)
@@ -262,15 +318,29 @@
                 dispatcher.Invoke((ThreadStart)(() => this.DestroyOverlay(process)));
         }
 
-        private void CheckGameIsInWindowMode(Process process)
+        private void CheckGameWindowMode(Process process)
         {
-            ScreenMode curScreanMode = this.xivConfig.ScreenMode;
+            FFXIVScreenMode curScreanMode = this.xivConfig.ScreenMode;
 
             this.log.Write(LogLevel.Info, string.Format("CurrentScreenMode: {0}", curScreanMode));
 
-            if (curScreanMode != ScreenMode.FramelessWindow)
+            if (curScreanMode != FFXIVScreenMode.FramelessWindow)
                 MessageBox.Show("FINAL FANTASY XIV have to run into frameless window mode!", "Frameless window mode required!", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
+
+        #endregion
+
+        #region Unhandled Exception
+
+        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            this.log.WriteException("Unhandled exception.", e.ExceptionObject as Exception);
+        }
+
+        private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            this.log.WriteException("Unhandled exception.", e.Exception);
+        } 
 
         #endregion
     }

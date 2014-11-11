@@ -1,37 +1,74 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Interop;
-
-namespace ZodiacGlass
+﻿namespace ZodiacGlass
 {
-    /// <summary>
-    /// Interaktionslogik für OverlayWindow.xaml
-    /// </summary>
+    using System;
+    using System.Diagnostics;
+    using System.Windows;
+    using System.Windows.Input;
+    using System.Windows.Interop;
+    using ZodiacGlass.FFXIV;
+    using ZodiacGlass.Native;
+
     public partial class OverlayWindow : Window
     {
-
-        private readonly VirtualZodiacGlass glass;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Process process;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Stopwatch mouseLeftButtonDownStopwatch;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private IntPtr handle;
 
-        public OverlayWindow(Process process = null)
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private OverlayDisplayMode displayMode;
+        
+        public OverlayWindow(Process process)
         {
             this.process = process;
 
-            if (this.process != null)
-                this.glass = new VirtualZodiacGlass(process, ZodiacGlass.Properties.Settings.Default.MemoryMap ?? MemoryMap.Default);
-
             InitializeComponent();
+        }
 
-            this.Left = Properties.Settings.Default.OverlayPosition.X;
-            this.Top = Properties.Settings.Default.OverlayPosition.Y;
+        internal event EventHandler<RoutedPropertyChangedEventArgs<OverlayDisplayMode>> DisplayModeChanged;
 
-            (this.DataContext as OverlayViewModel).Glass = this.glass;
+        internal OverlayDisplayMode DisplayMode
+        {
+            get 
+            {
+                return this.displayMode; 
+            }
+            set 
+            {
+                if (this.displayMode != value)
+                {
+                    OverlayDisplayMode oldValue = this.displayMode;
+
+                    this.displayMode = value;
+
+                    if (this.DisplayModeChanged != null)
+                        this.DisplayModeChanged(this, new RoutedPropertyChangedEventArgs<OverlayDisplayMode>(oldValue, value));
+                }
+            }
+        }
+
+        private OverlayViewModel ViewModel
+        {
+            get
+            {
+                return (this.DataContext as OverlayViewModel);
+            }
+        }
+
+        internal FFXIVMemoryReader MemoryReader
+        {
+            get
+            {
+                return this.ViewModel.MemoryReader;
+            }
+            set
+            {
+                this.ViewModel.MemoryReader = value;
+            }
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -41,11 +78,11 @@ namespace ZodiacGlass
             if (this.process != null)
             {
                 this.handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
-                this.ReOwn();
+                this.SetProcessWindowAsOwner();
             }
         }
 
-        private void ReOwn()
+        private void SetProcessWindowAsOwner()
         {
             NativeMethods.SetWindowLongPtr(this.handle, WindowLong.GWL_HWNDPARENT, this.process.MainWindowHandle);
         }
@@ -53,9 +90,6 @@ namespace ZodiacGlass
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
-
-            Properties.Settings.Default.OverlayPosition = new System.Drawing.Point((int)this.Left, (int)this.Top);
-            Properties.Settings.Default.Save();
         }
 
         private void OnImageMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -67,14 +101,14 @@ namespace ZodiacGlass
         {
             this.mouseLeftButtonDownStopwatch.Stop();
 
-            if (this.mouseLeftButtonDownStopwatch.ElapsedMilliseconds < 500)
+            if (this.mouseLeftButtonDownStopwatch.ElapsedMilliseconds < 300)
             {
                 OverlayViewModel vm = this.DataContext as OverlayViewModel;
 
-                if (vm.Mode == OverlayViewModel.DisplayMode.Normal)
-                    vm.Mode = OverlayViewModel.DisplayMode.Percentage;
+                if (vm.Mode == OverlayDisplayMode.Normal)
+                    vm.Mode = OverlayDisplayMode.Percentage;
                 else
-                    vm.Mode = OverlayViewModel.DisplayMode.Normal;
+                    vm.Mode = OverlayDisplayMode.Normal;
             }
         }
     }

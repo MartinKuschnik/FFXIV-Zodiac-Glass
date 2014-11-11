@@ -1,36 +1,30 @@
-﻿namespace ZodiacGlass
+﻿namespace ZodiacGlass.FFXIV
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
     using System.Reflection;
-    using System.Text;
-    using System.Threading.Tasks;
+    using ZodiacGlass.FFXIV;
+    using ZodiacGlass.Native;
 
-    internal class VirtualZodiacGlass : IVirtualZodiacGlass, IDisposable
+    internal class FFXIVMemoryReader :  IDisposable
     {
         #region Fields
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Process process;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IntPtr processHandel;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IntPtr equippedMainHandAddress;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IntPtr equippedOffHandAddress;
 
-        private readonly MemoryMap memMep;
+        private readonly FFXIVMemoryMap memMep;
 
         #endregion
 
         #region Constructors
 
-        public VirtualZodiacGlass(Process process, MemoryMap memMep)
+        public FFXIVMemoryReader(Process process, FFXIVMemoryMap memMep)
         {
             if (process == null)
                 throw new ArgumentNullException(MethodBase.GetCurrentMethod().GetParameters()[0].Name);
@@ -52,6 +46,8 @@
 
         #endregion
 
+        #region Functions
+
         public int GetEquippedMainHandLightAmount()
         {
             return this.ReadInt16(IntPtr.Add(this.equippedMainHandAddress, this.memMep.SpiritBondOffset));
@@ -71,8 +67,6 @@
         {
             return this.ReadInt32((IntPtr)this.equippedOffHandAddress);
         }
-
-        #region Functions
 
         private IntPtr CalculateAddress(int offset)
         {

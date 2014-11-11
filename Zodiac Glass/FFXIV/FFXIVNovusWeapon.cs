@@ -1,9 +1,9 @@
-﻿namespace ZodiacGlass
+﻿namespace ZodiacGlass.FFXIV
 {
     /// <summary>
     /// Novus Weapon IDs.
     /// </summary>
-    internal enum NovusWeapon
+    internal enum FFXIVNovusWeapon
     {
         /// <summary>
         /// Paladin Sword

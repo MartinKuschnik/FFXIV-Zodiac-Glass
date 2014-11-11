@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<MemoryMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<FFXIVMemoryMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <EquippedMainHandOffset>6536</EquippedMainHandOffset>
   <EquippedOffHandOffset>6600</EquippedOffHandOffset>
   <SpiritBondOffset>8</SpiritBondOffset>
@@ -7,4 +7,4 @@
     <int>17019680</int>
     <int>0</int>
   </InventoryAddress>
-</MemoryMap>
+</FFXIVMemoryMap>

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace ZodiacGlass
+﻿namespace ZodiacGlass.FFXIV
 {
-    internal class ZodiacGlassObserver : IDisposable
+    using System;
+    using System.Threading;
+
+    internal class FFXIVMemoryObserver : IDisposable
     {
-        private readonly IVirtualZodiacGlass glass;
+        private readonly FFXIVMemoryReader memoryReader;
 
         private readonly Timer timer;
 
@@ -21,14 +17,14 @@ namespace ZodiacGlass
 
         private int equippedOffHandID;
 
-        public ZodiacGlassObserver(IVirtualZodiacGlass glass)
+        public FFXIVMemoryObserver(FFXIVMemoryReader memoryReader)
         {
-            this.glass = glass;
+            this.memoryReader = memoryReader;
 
-            this.equippedMainHandLightAmount = glass.GetEquippedMainHandLightAmount();
-            this.equippedOffHandLightAmount = glass.GetEquippedOffHandLightAmount();
-            this.equippedMainHandID = glass.GetEquippedMainHandID();
-            this.equippedOffHandID = glass.GetEquippedOffHandID();
+            this.equippedMainHandLightAmount = memoryReader.GetEquippedMainHandLightAmount();
+            this.equippedOffHandLightAmount = memoryReader.GetEquippedOffHandLightAmount();
+            this.equippedMainHandID = memoryReader.GetEquippedMainHandID();
+            this.equippedOffHandID = memoryReader.GetEquippedOffHandID();
 
             this.timer = new Timer(this.OnTimerElapsed, null, 500, 500);
         }
@@ -40,6 +36,14 @@ namespace ZodiacGlass
         public event EventHandler<ValueChangedEventArgs<int>> EquippedMainHandIDChanged;
 
         public event EventHandler<ValueChangedEventArgs<int>> EquippedOffHandIDChanged;
+
+        public FFXIVMemoryReader MemoryReader
+        {
+            get
+            {
+                return this.memoryReader;
+            }
+        }
 
         private int EquippedMainHandLightAmount
         {
@@ -132,10 +136,10 @@ namespace ZodiacGlass
 
         private void OnTimerElapsed(object state)
         {
-            this.EquippedMainHandID = glass.GetEquippedMainHandID();
-            this.EquippedOffHandID = glass.GetEquippedOffHandID();
-            this.EquippedMainHandLightAmount = glass.GetEquippedMainHandLightAmount();
-            this.EquippedOffHandLightAmount = glass.GetEquippedOffHandLightAmount();
+            this.EquippedMainHandID = memoryReader.GetEquippedMainHandID();
+            this.EquippedOffHandID = memoryReader.GetEquippedOffHandID();
+            this.EquippedMainHandLightAmount = memoryReader.GetEquippedMainHandLightAmount();
+            this.EquippedOffHandLightAmount = memoryReader.GetEquippedOffHandLightAmount();
         }
 
         public void Dispose()

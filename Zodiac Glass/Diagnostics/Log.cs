@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace ZodiacGlass
+namespace ZodiacGlass.Diagnostics
 {
     internal class Log : IDisposable
     {

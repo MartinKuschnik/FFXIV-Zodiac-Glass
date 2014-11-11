@@ -1,4 +1,4 @@
-﻿namespace ZodiacGlass
+﻿namespace ZodiacGlass.Native
 {
     public enum WindowLong : int
     {

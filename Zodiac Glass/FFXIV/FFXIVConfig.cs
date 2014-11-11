@@ -1,40 +1,19 @@
 ﻿namespace ZodiacGlass.FFXIV
 {
     using System;
-    using System.IO;
     using System.Diagnostics;
 
-    internal class FFXIVConfig : IDisposable
+    internal struct FFXIVConfig
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly StreamReader stream;
+        private FFXIVScreenMode? screenMode;
 
-        public FFXIVConfig()
+        public FFXIVScreenMode ScreenMode
         {
-            this.stream = new StreamReader(File.Open(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"My Games\FINAL FANTASY XIV - A Realm Reborn\FFXIV.cfg"), FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+            get { return this.screenMode ?? FFXIVScreenMode.Unknwon; }
+            set { this.screenMode = value; }
         }
+        
 
-        public ScreenMode ScreenMode
-        {
-            get
-            {
-                this.stream.BaseStream.Position = 0;
-
-                while (!this.stream.EndOfStream)
-                {
-                    string line = stream.ReadLine();
-
-                    if (line.StartsWith("ScreenMode"))
-                        return (ScreenMode)ushort.Parse(line.Substring(line.Length - 1));
-                }
-
-                throw new InvalidDataException();
-            }
-        }
-
-        public void Dispose()
-        {
-            this.stream.Dispose();
-        }
     }
 }

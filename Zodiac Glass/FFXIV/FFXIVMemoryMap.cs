@@ -1,13 +1,13 @@
-﻿namespace ZodiacGlass
+﻿namespace ZodiacGlass.FFXIV
 {
     using System;
     using System.Linq;
 
-    public class MemoryMap
+    public class FFXIVMemoryMap
     {
-        private static readonly Lazy<MemoryMap> _default = new Lazy<MemoryMap>(() => new MemoryMap() { InventoryAddress = new int[] { 0x103B320, 0 }, EquippedMainHandOffset = 0x1988, EquippedOffHandOffset = 0x19C8, SpiritBondOffset = 0x8 });
+        private static readonly Lazy<FFXIVMemoryMap> _default = new Lazy<FFXIVMemoryMap>(() => new FFXIVMemoryMap() { InventoryAddress = new int[] { 0x103B320, 0 }, EquippedMainHandOffset = 0x1988, EquippedOffHandOffset = 0x19C8, SpiritBondOffset = 0x8 });
 
-        public static MemoryMap Default
+        public static FFXIVMemoryMap Default
         {
             get
             {
@@ -30,7 +30,7 @@
 
         public override bool Equals(object obj)
         {
-            MemoryMap other = obj as MemoryMap;
+            FFXIVMemoryMap other = obj as FFXIVMemoryMap;
             return other != null && this.EquippedMainHandOffset == other.EquippedMainHandOffset && this.EquippedOffHandOffset == other.EquippedOffHandOffset && this.SpiritBondOffset == other.SpiritBondOffset && Enumerable.SequenceEqual(this.InventoryAddress, other.InventoryAddress);
         }
     }

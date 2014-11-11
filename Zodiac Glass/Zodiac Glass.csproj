@@ -79,29 +79,26 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="FFXIV\FFXIVConfig.cs" />
-    <Compile Include="FFXIV\ScreenMode.cs" />
-    <Compile Include="FFXIV\NovusWeapon.cs" />
-    <Compile Include="Misc\DesignTimeZodiacGlass.cs" />
-    <Compile Include="Misc\IVirtualZodiacGlass.cs" />
-    <Compile Include="Misc\Log.cs" />
-    <Compile Include="Misc\LogLevel.cs" />
-    <Compile Include="Misc\MemoryMap.cs" />
-    <Compile Include="Misc\NativeMethods.cs" />
-    <Compile Include="Misc\ProcessAccessFlags.cs" />
+    <Compile Include="FFXIV\FFXIVConfigReader.cs" />
+    <Compile Include="FFXIV\FFXIVScreenMode.cs" />
+    <Compile Include="FFXIV\FFXIVNovusWeapon.cs" />
+    <Compile Include="Diagnostics\Log.cs" />
+    <Compile Include="Diagnostics\LogLevel.cs" />
+    <Compile Include="FFXIV\FFXIVMemoryMap.cs" />
+    <Compile Include="Misc\OverlayDisplayMode.cs" />
+    <Compile Include="Native\NativeMethods.cs" />
+    <Compile Include="Native\ProcessAccessFlags.cs" />
     <Compile Include="Misc\ProcessEventArgs.cs" />
     <Compile Include="Misc\ProcessObserver.cs" />
     <Compile Include="Misc\ValueChangedEventArgs.cs" />
-    <Compile Include="Misc\ViewModelBase.cs" />
-    <Compile Include="Misc\WindowLong.cs" />
-    <Compile Include="Misc\WindowStyle.cs" />
-    <Compile Include="Misc\WindowStyleEx.cs" />
-    <Compile Include="Misc\ZodiacGlassObserver.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Native\WindowLong.cs" />
+    <Compile Include="FFXIV\FFXIVMemoryObserver.cs" />
     <Compile Include="ViewModels\OverlayViewModel.cs" />
     <Compile Include="Views\OverlayWindow.xaml.cs">
       <DependentUpon>OverlayWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Misc\VirtualZodiacGlass.cs" />
+    <Compile Include="FFXIV\FFXIVMemoryReader.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -134,7 +131,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <Resource Include="Resources\finalf.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

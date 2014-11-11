@@ -1,15 +1,10 @@
-﻿
-namespace ZodiacGlass
+﻿namespace ZodiacGlass
 {
-        using System;
-        using System.Collections.Generic;
-        using System.Diagnostics;
-        using System.Linq;
-        using System.Management;
-        using System.Text;
-        using System.Threading.Tasks;
+    using System;
+    using System.Diagnostics;
+    using System.Management;
 
-        internal class ProcessObserver : IDisposable
+    internal class ProcessObserver : IDisposable
         {
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private readonly ManagementEventWatcher watcher;

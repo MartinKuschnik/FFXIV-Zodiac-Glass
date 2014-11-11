@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using ZodiacGlass.FFXIV;
 
 namespace ZodiacGlass
 {
@@ -16,17 +17,16 @@ namespace ZodiacGlass
         private const int AdditionLifeTime = 20000;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private IVirtualZodiacGlass glass;
+        private FFXIVMemoryReader glass;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private DisplayMode mode;
+        private OverlayDisplayMode mode;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private ZodiacGlassObserver observer;
+        private FFXIVMemoryObserver observer;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool ignoreNextMainHandAddition;
-
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool ignoreNextOffHandAddition;
@@ -39,13 +39,11 @@ namespace ZodiacGlass
 
         public OverlayViewModel()
         {
-            if (this.IsInDesignMode)
-            {
-                this.Glass = new DesignTimeZodiacGlass();
-            }
+
+
         }
 
-        public IVirtualZodiacGlass Glass
+        public FFXIVMemoryReader MemoryReader
         {
             get
             {
@@ -68,7 +66,7 @@ namespace ZodiacGlass
 
                 if (this.glass != null)
                 {
-                    this.observer = new ZodiacGlassObserver(this.glass);
+                    this.observer = new FFXIVMemoryObserver(this.glass);
 
                     this.observer.EquippedMainHandLightAmountChanged += this.OnEquippedMainHandLightAmountChanged;
                     this.observer.EquippedOffHandLightAmountChanged += this.OnEquippedOffHandLightAmountChanged;
@@ -82,8 +80,6 @@ namespace ZodiacGlass
                 this.NotifyPropertyChanged(() => this.EquippedMainHandLightAmount);
                 this.NotifyPropertyChanged(() => this.EquippedOffHandLightAmount);
                 this.NotifyPropertyChanged(() => this.OffHandVisibility);
-
-
             }
         }
 
@@ -155,42 +151,42 @@ namespace ZodiacGlass
                 {
                     string className = null;
 
-                    if (this.glass.GetEquippedOffHandID() == (int)NovusWeapon.HolyShieldNovus)
+                    if (this.glass.GetEquippedOffHandID() == (int)FFXIVNovusWeapon.HolyShieldNovus)
                     {
                         className = "paladin";
                     }
                     else
                     {
-                        switch ((NovusWeapon)this.glass.GetEquippedMainHandID())
+                        switch ((FFXIVNovusWeapon)this.glass.GetEquippedMainHandID())
                         {
-                            case NovusWeapon.CurtanaNovus:
+                            case FFXIVNovusWeapon.CurtanaNovus:
                                 className = "paladin";
                                 break;
-                            case NovusWeapon.SphairaiNovus:
+                            case FFXIVNovusWeapon.SphairaiNovus:
                                 className = "monk";
                                 break;
-                            case NovusWeapon.BravuraNovus:
+                            case FFXIVNovusWeapon.BravuraNovus:
                                 className = "warrior";
                                 break;
-                            case NovusWeapon.GaeBolgNovus:
+                            case FFXIVNovusWeapon.GaeBolgNovus:
                                 className = "dragoon";
                                 break;
-                            case NovusWeapon.ArtemisBowNovus:
+                            case FFXIVNovusWeapon.ArtemisBowNovus:
                                 className = "bard";
                                 break;
-                            case NovusWeapon.ThyrusNovus:
+                            case FFXIVNovusWeapon.ThyrusNovus:
                                 className = "whitemage";
                                 break;
-                            case NovusWeapon.StardustRodNovus:
+                            case FFXIVNovusWeapon.StardustRodNovus:
                                 className = "blackmage";
                                 break;
-                            case NovusWeapon.TheVeilofWiyuNovus:
+                            case FFXIVNovusWeapon.TheVeilofWiyuNovus:
                                 className = "summoner";
                                 break;
-                            case NovusWeapon.OmnilexNovus:
+                            case FFXIVNovusWeapon.OmnilexNovus:
                                 className = "scholar";
                                 break;
-                            case NovusWeapon.YoshimitsuNovus:
+                            case FFXIVNovusWeapon.YoshimitsuNovus:
                                 className = "ninja";
                                 break;
                         }
@@ -214,7 +210,7 @@ namespace ZodiacGlass
                 if (this.glass != null)
                     val = this.glass.GetEquippedMainHandLightAmount();
 
-                return this.Mode == DisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / 2000, 2));
+                return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / 2000, 2));
             }
         }
 
@@ -227,11 +223,11 @@ namespace ZodiacGlass
                 if (this.glass != null)
                     val = this.glass.GetEquippedOffHandLightAmount();
 
-                return this.Mode == DisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / 2000, 2));
+                return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / 2000, 2));
             }
         }
 
-        public DisplayMode Mode
+        public OverlayDisplayMode Mode
         {
             get
             {
@@ -307,7 +303,7 @@ namespace ZodiacGlass
         {
             get
             {
-                return this.glass != null && Enum.IsDefined(typeof(NovusWeapon), this.glass.GetEquippedMainHandID()) ? Visibility.Visible : Visibility.Collapsed;
+                return this.glass != null && Enum.IsDefined(typeof(FFXIVNovusWeapon), this.glass.GetEquippedMainHandID()) ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -315,7 +311,7 @@ namespace ZodiacGlass
         {
             get
             {
-                return this.glass != null && (NovusWeapon)this.glass.GetEquippedOffHandID() == NovusWeapon.HolyShieldNovus ? Visibility.Visible : Visibility.Collapsed;
+                return this.glass != null && (FFXIVNovusWeapon)this.glass.GetEquippedOffHandID() == FFXIVNovusWeapon.HolyShieldNovus ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -325,13 +321,6 @@ namespace ZodiacGlass
             {
                 return this.ClassSymbolUri != null ? Visibility.Visible : Visibility.Collapsed;
             }
-        }
-
-
-        internal enum DisplayMode
-        {
-            Normal,
-            Percentage
         }
     }
 }

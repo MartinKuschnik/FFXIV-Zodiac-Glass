@@ -1,8 +1,6 @@
-﻿
-namespace ZodiacGlass
+﻿namespace ZodiacGlass.Native
 {
     using System;
-    using System.ComponentModel;
     using System.Runtime.InteropServices;
 
     internal class NativeMethods

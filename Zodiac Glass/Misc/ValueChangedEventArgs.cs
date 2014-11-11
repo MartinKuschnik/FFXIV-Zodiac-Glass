@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ZodiacGlass
+﻿namespace ZodiacGlass
 {
+    using System;
+    using System.Diagnostics;
+
     class ValueChangedEventArgs<T> : EventArgs
     {
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly T oldValue;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly T newValue;
 
         public ValueChangedEventArgs(T oldValue, T newValue)
