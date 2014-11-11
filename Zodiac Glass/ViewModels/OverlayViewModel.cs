@@ -151,42 +151,42 @@ namespace ZodiacGlass
                 {
                     string className = null;
 
-                    if (this.glass.GetEquippedOffHandID() == (int)FFXIVNovusWeapon.HolyShieldNovus)
+                    if (this.glass.GetEquippedOffHandID() == (int)FFXIVNovusWeaponID.HolyShieldNovus)
                     {
                         className = "paladin";
                     }
                     else
                     {
-                        switch ((FFXIVNovusWeapon)this.glass.GetEquippedMainHandID())
+                        switch ((FFXIVNovusWeaponID)this.glass.GetEquippedMainHandID())
                         {
-                            case FFXIVNovusWeapon.CurtanaNovus:
+                            case FFXIVNovusWeaponID.CurtanaNovus:
                                 className = "paladin";
                                 break;
-                            case FFXIVNovusWeapon.SphairaiNovus:
+                            case FFXIVNovusWeaponID.SphairaiNovus:
                                 className = "monk";
                                 break;
-                            case FFXIVNovusWeapon.BravuraNovus:
+                            case FFXIVNovusWeaponID.BravuraNovus:
                                 className = "warrior";
                                 break;
-                            case FFXIVNovusWeapon.GaeBolgNovus:
+                            case FFXIVNovusWeaponID.GaeBolgNovus:
                                 className = "dragoon";
                                 break;
-                            case FFXIVNovusWeapon.ArtemisBowNovus:
+                            case FFXIVNovusWeaponID.ArtemisBowNovus:
                                 className = "bard";
                                 break;
-                            case FFXIVNovusWeapon.ThyrusNovus:
+                            case FFXIVNovusWeaponID.ThyrusNovus:
                                 className = "whitemage";
                                 break;
-                            case FFXIVNovusWeapon.StardustRodNovus:
+                            case FFXIVNovusWeaponID.StardustRodNovus:
                                 className = "blackmage";
                                 break;
-                            case FFXIVNovusWeapon.TheVeilofWiyuNovus:
+                            case FFXIVNovusWeaponID.TheVeilofWiyuNovus:
                                 className = "summoner";
                                 break;
-                            case FFXIVNovusWeapon.OmnilexNovus:
+                            case FFXIVNovusWeaponID.OmnilexNovus:
                                 className = "scholar";
                                 break;
-                            case FFXIVNovusWeapon.YoshimitsuNovus:
+                            case FFXIVNovusWeaponID.YoshimitsuNovus:
                                 className = "ninja";
                                 break;
                         }
@@ -303,7 +303,7 @@ namespace ZodiacGlass
         {
             get
             {
-                return this.glass != null && Enum.IsDefined(typeof(FFXIVNovusWeapon), this.glass.GetEquippedMainHandID()) ? Visibility.Visible : Visibility.Collapsed;
+                return this.glass != null && Enum.IsDefined(typeof(FFXIVNovusWeaponID), this.glass.GetEquippedMainHandID()) ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -311,7 +311,7 @@ namespace ZodiacGlass
         {
             get
             {
-                return this.glass != null && (FFXIVNovusWeapon)this.glass.GetEquippedOffHandID() == FFXIVNovusWeapon.HolyShieldNovus ? Visibility.Visible : Visibility.Collapsed;
+                return this.glass != null && (FFXIVNovusWeaponID)this.glass.GetEquippedOffHandID() == FFXIVNovusWeaponID.HolyShieldNovus ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 

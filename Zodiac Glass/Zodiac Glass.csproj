@@ -42,6 +42,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -80,11 +81,14 @@
     </ApplicationDefinition>
     <Compile Include="FFXIV\FFXIVConfig.cs" />
     <Compile Include="FFXIV\FFXIVConfigReader.cs" />
+    <Compile Include="FFXIV\FFXIVMemoryMapV2.cs" />
+    <Compile Include="FFXIV\FFXIVMemoryReaderV2.cs" />
     <Compile Include="FFXIV\FFXIVScreenMode.cs" />
-    <Compile Include="FFXIV\FFXIVNovusWeapon.cs" />
+    <Compile Include="FFXIV\FFXIVNovusWeaponID.cs" />
     <Compile Include="Diagnostics\Log.cs" />
     <Compile Include="Diagnostics\LogLevel.cs" />
     <Compile Include="FFXIV\FFXIVMemoryMap.cs" />
+    <Compile Include="FFXIV\FFXIVWeapon.cs" />
     <Compile Include="Misc\OverlayDisplayMode.cs" />
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\ProcessAccessFlags.cs" />

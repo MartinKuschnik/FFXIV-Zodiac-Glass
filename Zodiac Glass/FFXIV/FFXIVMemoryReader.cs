@@ -68,7 +68,7 @@
             return this.ReadInt32((IntPtr)this.equippedOffHandAddress);
         }
 
-        private IntPtr CalculateAddress(int offset)
+        private unsafe IntPtr CalculateAddress(int offset)
         {
             IntPtr addr = this.process.MainModule.BaseAddress;
 
