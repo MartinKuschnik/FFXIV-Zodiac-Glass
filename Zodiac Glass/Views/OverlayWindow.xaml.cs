@@ -18,9 +18,6 @@
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private IntPtr handle;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private OverlayDisplayMode displayMode;
         
         public OverlayWindow(Process process)
         {
@@ -29,24 +26,24 @@
             InitializeComponent();
         }
 
-        internal event EventHandler<RoutedPropertyChangedEventArgs<OverlayDisplayMode>> DisplayModeChanged;
+        internal event EventHandler<ValueChangedEventArgs<OverlayDisplayMode>> DisplayModeChanged;
 
         internal OverlayDisplayMode DisplayMode
         {
             get 
             {
-                return this.displayMode; 
+                return this.ViewModel.Mode; 
             }
             set 
             {
-                if (this.displayMode != value)
+                if (this.ViewModel.Mode != value)
                 {
-                    OverlayDisplayMode oldValue = this.displayMode;
+                    OverlayDisplayMode oldValue = this.ViewModel.Mode;
 
-                    this.displayMode = value;
+                    this.ViewModel.Mode = value;
 
                     if (this.DisplayModeChanged != null)
-                        this.DisplayModeChanged(this, new RoutedPropertyChangedEventArgs<OverlayDisplayMode>(oldValue, value));
+                        this.DisplayModeChanged(this, new ValueChangedEventArgs<OverlayDisplayMode>(oldValue, value));
                 }
             }
         }
@@ -103,12 +100,10 @@
 
             if (this.mouseLeftButtonDownStopwatch.ElapsedMilliseconds < 300)
             {
-                OverlayViewModel vm = this.DataContext as OverlayViewModel;
-
-                if (vm.Mode == OverlayDisplayMode.Normal)
-                    vm.Mode = OverlayDisplayMode.Percentage;
+                if (this.DisplayMode == OverlayDisplayMode.Normal)
+                    this.DisplayMode = OverlayDisplayMode.Percentage;
                 else
-                    vm.Mode = OverlayDisplayMode.Normal;
+                    this.DisplayMode = OverlayDisplayMode.Normal;
             }
         }
     }

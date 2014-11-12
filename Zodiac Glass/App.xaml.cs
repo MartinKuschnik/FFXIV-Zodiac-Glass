@@ -148,19 +148,29 @@
             newItem.Click += (s, e) => Process.Start("http://www.reddit.com/r/ffxiv/comments/2gm1ru/nexus_light_information/");
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
 
-            newItem = new ToolStripMenuItem("About");
-            newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "about.ico"))).Stream);
-            string msg;
-            using (StreamReader sr = new StreamReader(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "About.txt"))).Stream))
-            {
-                msg = sr.ReadToEnd();
-            }
-            newItem.Click += (s, e) => MessageBox.Show(msg, "About Zodiac Glass", MessageBoxButton.OK, MessageBoxImage.Information);
+            newItem = new ToolStripMenuItem("Update");
+            newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "update.ico"))).Stream);
+            newItem.Click += (s, e) => {
+                if (this.UpdateMemoryMap())
+                    this.notifyIcon.ShowBalloonTip(2500, "Update successfully.", "I hope it works now\r\n\r\n   ( ͡° ͜ʖ ͡°)\r\n", System.Windows.Forms.ToolTipIcon.Info);
+                else
+                    this.notifyIcon.ShowBalloonTip(2500, "Update failed.", "No update available\r\n\r\n   （　´_ゝ`）\r\n", System.Windows.Forms.ToolTipIcon.Warning);
+            };
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
 
             newItem = new ToolStripMenuItem("Donate");
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "donate.ico"))).Stream);
             newItem.Click += (s, e) => Process.Start("https://www.paypal.com/cgi-bin/webscr?hosted_button_id=5MGV57U5FL728&cmd=_s-xclick");
+            this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
+
+            newItem = new ToolStripMenuItem("About");
+            newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "about.ico"))).Stream);
+            string msg;
+            using (StreamReader sr = new StreamReader(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "About.txt"))).Stream))
+            {
+                msg = sr.ReadToEnd().Replace("{$Copyright}", AssemblyProperties.Copyright);
+            }
+            newItem.Click += (s, e) => MessageBox.Show(msg, string.Format("About Zodiac Glass v{0}", AssemblyProperties.Version), MessageBoxButton.OK, MessageBoxImage.Information);
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
 
             newItem = new ToolStripMenuItem("Exit");
@@ -282,7 +292,7 @@
             return false;
         }
 
-        private void OnOverlayDisplayModeChanged(object sender, RoutedPropertyChangedEventArgs<OverlayDisplayMode> e)
+        private void OnOverlayDisplayModeChanged(object sender, ValueChangedEventArgs<OverlayDisplayMode> e)
         {
             OverlayWindow overlay = sender as OverlayWindow;
 

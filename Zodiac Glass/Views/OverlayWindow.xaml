@@ -14,6 +14,12 @@
     <Window.DataContext>
         <ZG:OverlayViewModel />
     </Window.DataContext>
+    <Window.Resources>
+            <DropShadowEffect x:Key="TextShadow" ShadowDepth="2"                              
+                              Color="Black"
+                              Opacity="0.2"
+                              BlurRadius="0" />
+    </Window.Resources>
     <StackPanel Orientation="Horizontal"
                 Visibility="{Binding OverlayVisibility}"
                 Height="24"
@@ -23,63 +29,38 @@
                MouseLeftButtonUp="OnImageMouseLeftButtonUp"
                Source="{Binding ClassSymbolUri}" />
         <TextBlock Foreground="#FFDED2B8"
+                   Effect="{StaticResource TextShadow}"
                    Visibility="{Binding MainHandVisibility}"
                    Text="{Binding EquippedMainHandLightAmount}" FontWeight="SemiBold"
                    FontSize="16">
-            <TextBlock.BitmapEffect>
-                <OuterGlowBitmapEffect GlowColor="Red" GlowSize="50" Noise="5" Opacity="0.5" />
-            </TextBlock.BitmapEffect>
         </TextBlock>
         <TextBlock Foreground="#FFDED2B8"
+                   Effect="{StaticResource TextShadow}"
                    Visibility="{Binding MainHandAdditionVisibility}"
                    Text="{Binding MainHandAddition, StringFormat='(+{0})'}"
                    FontWeight="SemiBold"
                    FontSize="16">
-
-            <TextBlock.BitmapEffect>
-                <OuterGlowBitmapEffect GlowColor="Red"
-                                       GlowSize="50"
-                                       Noise="5"
-                                       Opacity="0.5" />
-            </TextBlock.BitmapEffect>
         </TextBlock>
         <TextBlock Foreground="#FFDED2B8"
+                   Effect="{StaticResource TextShadow}"
                    Visibility="{Binding SeparatorVisibility}"
                    Text=" | "
                    FontWeight="SemiBold"
                    FontSize="16">
-            <TextBlock.BitmapEffect>
-                <OuterGlowBitmapEffect GlowColor="Red"
-                                       GlowSize="50"
-                                       Noise="5"
-                                       Opacity="0.5" />
-            </TextBlock.BitmapEffect>
         </TextBlock>
         <TextBlock Foreground="#FFDED2B8"
+                   Effect="{StaticResource TextShadow}"
                    Visibility="{Binding OffHandVisibility}"
                    Text="{Binding EquippedOffHandLightAmount}"
                    FontWeight="SemiBold"
                    FontSize="16">
-
-            <TextBlock.BitmapEffect>
-                <OuterGlowBitmapEffect GlowColor="Red"
-                                       GlowSize="50"
-                                       Noise="5"
-                                       Opacity="0.5" />
-            </TextBlock.BitmapEffect>
         </TextBlock>
         <TextBlock Foreground="#FFDED2B8"
+                   Effect="{StaticResource TextShadow}"
                    Visibility="{Binding OffHandAdditionVisibility}"
                    Text="{Binding OffHandAddition, StringFormat='(+{0})'}"
                    FontWeight="SemiBold"
                    FontSize="16">
-
-            <TextBlock.BitmapEffect>
-                <OuterGlowBitmapEffect GlowColor="Red"
-                                       GlowSize="50"
-                                       Noise="5"
-                                       Opacity="0.5" />
-            </TextBlock.BitmapEffect>
         </TextBlock>
     </StackPanel>
 </Window>
