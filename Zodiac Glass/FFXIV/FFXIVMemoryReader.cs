@@ -40,18 +40,37 @@
         
         #endregion
 
+        #region Properties
+
+
+        public Process Process
+        {
+            get { return this.process; }
+        }
+        
+
+        #endregion
+
         #region Functions
 
         public FFXIVItemSet ReadItemSet()
         {
             unsafe
             {
-                int* p = (int*)(this.process.MainModule.BaseAddress + this.memMep.ItemSetPointer.BaseAddressOffset);
+                if (!this.process.HasExited)
+                {
+                    int* p = (int*)(this.process.MainModule.BaseAddress + this.memMep.ItemSetPointer.BaseAddressOffset);
 
-                foreach (int offset in this.memMep.ItemSetPointer.Offsets)
-                    p = (int*)(this.Read<int>(p) + offset);
+                    foreach (int offset in this.memMep.ItemSetPointer.Offsets)
+                        p = (int*)(this.Read<int>(p) + offset);
 
-                return this.Read<FFXIVItemSet>(p); 
+                    return this.Read<FFXIVItemSet>(p);
+
+                }
+                else
+                {
+                    return default(FFXIVItemSet);
+                }
             }
         }
 

@@ -138,12 +138,20 @@
 
         private void OnTimerElapsed(object state)
         {
-            FFXIVItemSet itemSet = memoryReader.ReadItemSet();
+            if (!this.MemoryReader.Process.HasExited)
+            {
+                FFXIVItemSet itemSet = memoryReader.ReadItemSet();
 
-            this.EquippedMainHandID = itemSet.Weapon.ID;
-            this.EquippedOffHandID = itemSet.Shield.ID;
-            this.EquippedMainHandLightAmount = itemSet.Weapon.LightAmount;
-            this.EquippedOffHandLightAmount = itemSet.Shield.LightAmount;
+                this.EquippedMainHandID = itemSet.Weapon.ID;
+                this.EquippedOffHandID = itemSet.Shield.ID;
+                this.EquippedMainHandLightAmount = itemSet.Weapon.LightAmount;
+                this.EquippedOffHandLightAmount = itemSet.Shield.LightAmount;
+            }
+            else
+            {
+                this.timer.Dispose();
+            }
+
         }
 
         public void Dispose()
