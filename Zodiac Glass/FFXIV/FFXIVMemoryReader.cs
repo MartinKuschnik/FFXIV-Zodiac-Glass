@@ -7,19 +7,13 @@
     using ZodiacGlass.FFXIV;
     using ZodiacGlass.Native;
 
-    internal unsafe class FFXIVMemoryReader :  IDisposable
+    internal unsafe class FFXIVMemoryReader : IDisposable
     {
         #region Fields
 
         private readonly Process process;
 
         private readonly IntPtr processHandel;
-
-        private readonly IntPtr equippedMainHandAddress;
-
-        private readonly FFXIVWeapon* mainHand;
-
-        private readonly IntPtr equippedOffHandAddress;
 
         private readonly FFXIVMemoryMap memMep;
 
@@ -41,70 +35,36 @@
             if (!this.process.HasExited)
             {
                 this.processHandel = NativeMethods.OpenProcess(ProcessAccessFlags.VirtualMemoryRead | ProcessAccessFlags.QueryInformation, false, this.process.Id);
-                
-                this.equippedMainHandAddress = this.CalculateAddress(this.memMep.EquippedMainHandOffset);
-                this.equippedOffHandAddress = this.CalculateAddress(this.memMep.EquippedOffHandOffset);
             }
         }
-
+        
         #endregion
 
         #region Functions
 
-
-        public int GetEquippedMainHandLightAmount()
+        public FFXIVItemSet ReadItemSet()
         {
-            return this.ReadInt16(IntPtr.Add(this.equippedMainHandAddress, this.memMep.SpiritBondOffset));
-        }
-
-        public int GetEquippedOffHandLightAmount()
-        {
-            return this.ReadInt16(IntPtr.Add(this.equippedOffHandAddress, this.memMep.SpiritBondOffset));
-        }
-
-        public int GetEquippedMainHandID()
-        {
-            return this.ReadInt32((IntPtr)this.equippedMainHandAddress);
-        }
-
-        public int GetEquippedOffHandID()
-        {
-            return this.ReadInt32((IntPtr)this.equippedOffHandAddress);
-        }
-
-        private unsafe IntPtr CalculateAddress(int offset)
-        {
-            IntPtr addr = this.process.MainModule.BaseAddress;
-
-            foreach (IntPtr addrPointer in this.memMep.InventoryAddress)
-                addr = (IntPtr)this.ReadInt32(IntPtr.Add(addr, (int)addrPointer));
-
-            return IntPtr.Add(addr, offset);
-        }
-
-        private short ReadInt16(IntPtr addr)
-        {
-            byte[] buffer = new byte[sizeof(short)];
-            int readCount = 0;
-
-            NativeMethods.ReadProcessMemory(this.processHandel, addr, buffer, sizeof(short), ref readCount);
-
-            fixed (byte* p = &buffer[0])
+            unsafe
             {
-                return *(short*)p;
+                int* p = (int*)(this.process.MainModule.BaseAddress + this.memMep.ItemSetPointer.BaseAddressOffset);
+
+                foreach (int offset in this.memMep.ItemSetPointer.Offsets)
+                    p = (int*)(this.Read<int>(p) + offset);
+
+                return this.Read<FFXIVItemSet>(p); 
             }
         }
 
-        private int ReadInt32(IntPtr addr)
+        private unsafe T Read<T>(void* p) where T : struct
         {
-            byte[] buffer = new byte[sizeof(int)];
+            byte[] buffer = new byte[Marshal.SizeOf(default(T))];
             int readCount = 0;
 
-            NativeMethods.ReadProcessMemory(this.processHandel, addr, buffer, sizeof(int), ref readCount);
+            NativeMethods.ReadProcessMemory(this.processHandel, (IntPtr)p, buffer, buffer.Length, ref readCount);
 
-            fixed (byte* p = &buffer[0])
+            fixed (byte* pBuffer = &buffer[0])
             {
-                return *(int*)p;
+                return (T)Marshal.PtrToStructure((IntPtr)pBuffer, typeof(T));
             }
         }
 

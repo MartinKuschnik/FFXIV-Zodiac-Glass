@@ -79,6 +79,8 @@ namespace ZodiacGlass
                 this.NotifyPropertyChanged(() => this.ClassSymbolUri);
                 this.NotifyPropertyChanged(() => this.EquippedMainHandLightAmount);
                 this.NotifyPropertyChanged(() => this.EquippedOffHandLightAmount);
+                this.NotifyPropertyChanged(() => this.SeparatorVisibility);
+                this.NotifyPropertyChanged(() => this.MainHandVisibility);
                 this.NotifyPropertyChanged(() => this.OffHandVisibility);
             }
         }
@@ -151,13 +153,15 @@ namespace ZodiacGlass
                 {
                     string className = null;
 
-                    if (this.glass.GetEquippedOffHandID() == (int)FFXIVNovusWeaponID.HolyShieldNovus)
+                    FFXIVItemSet itemSet = this.glass.ReadItemSet();
+
+                    if (itemSet.Shield.ID == (int)FFXIVNovusWeaponID.HolyShieldNovus)
                     {
                         className = "paladin";
                     }
                     else
                     {
-                        switch ((FFXIVNovusWeaponID)this.glass.GetEquippedMainHandID())
+                        switch ((FFXIVNovusWeaponID)itemSet.Weapon.ID)
                         {
                             case FFXIVNovusWeaponID.CurtanaNovus:
                                 className = "paladin";
@@ -208,7 +212,10 @@ namespace ZodiacGlass
                 int val = 0;
 
                 if (this.glass != null)
-                    val = this.glass.GetEquippedMainHandLightAmount();
+                {
+                    FFXIVItemSet itemSet = this.glass.ReadItemSet();
+                    val = itemSet.Weapon.LightAmount;
+                }
 
                 return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / 2000, 2));
             }
@@ -221,7 +228,10 @@ namespace ZodiacGlass
                 int val = 0;
 
                 if (this.glass != null)
-                    val = this.glass.GetEquippedOffHandLightAmount();
+                {
+                    FFXIVItemSet itemSet = this.glass.ReadItemSet();
+                    val = itemSet.Shield.LightAmount;
+                }
 
                 return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / 2000, 2));
             }
@@ -303,7 +313,7 @@ namespace ZodiacGlass
         {
             get
             {
-                return this.glass != null && Enum.IsDefined(typeof(FFXIVNovusWeaponID), this.glass.GetEquippedMainHandID()) ? Visibility.Visible : Visibility.Collapsed;
+                return this.glass != null && Enum.IsDefined(typeof(FFXIVNovusWeaponID), this.glass.ReadItemSet().Weapon.ID) ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -311,7 +321,7 @@ namespace ZodiacGlass
         {
             get
             {
-                return this.glass != null && (FFXIVNovusWeaponID)this.glass.GetEquippedOffHandID() == FFXIVNovusWeaponID.HolyShieldNovus ? Visibility.Visible : Visibility.Collapsed;
+                return this.glass != null && (FFXIVNovusWeaponID)this.glass.ReadItemSet().Shield.ID == FFXIVNovusWeaponID.HolyShieldNovus ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 

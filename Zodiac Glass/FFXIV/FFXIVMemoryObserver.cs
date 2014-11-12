@@ -21,10 +21,12 @@
         {
             this.memoryReader = memoryReader;
 
-            this.equippedMainHandLightAmount = memoryReader.GetEquippedMainHandLightAmount();
-            this.equippedOffHandLightAmount = memoryReader.GetEquippedOffHandLightAmount();
-            this.equippedMainHandID = memoryReader.GetEquippedMainHandID();
-            this.equippedOffHandID = memoryReader.GetEquippedOffHandID();
+            FFXIVItemSet itemSet = memoryReader.ReadItemSet();
+
+            this.equippedMainHandLightAmount = itemSet.Weapon.LightAmount;
+            this.equippedOffHandLightAmount = itemSet.Shield.LightAmount;
+            this.equippedMainHandID = itemSet.Weapon.ID;
+            this.equippedOffHandID = itemSet.Shield.ID;
 
             this.timer = new Timer(this.OnTimerElapsed, null, 500, 500);
         }
@@ -136,10 +138,12 @@
 
         private void OnTimerElapsed(object state)
         {
-            this.EquippedMainHandID = memoryReader.GetEquippedMainHandID();
-            this.EquippedOffHandID = memoryReader.GetEquippedOffHandID();
-            this.EquippedMainHandLightAmount = memoryReader.GetEquippedMainHandLightAmount();
-            this.EquippedOffHandLightAmount = memoryReader.GetEquippedOffHandLightAmount();
+            FFXIVItemSet itemSet = memoryReader.ReadItemSet();
+
+            this.EquippedMainHandID = itemSet.Weapon.ID;
+            this.EquippedOffHandID = itemSet.Shield.ID;
+            this.EquippedMainHandLightAmount = itemSet.Weapon.LightAmount;
+            this.EquippedOffHandLightAmount = itemSet.Shield.LightAmount;
         }
 
         public void Dispose()

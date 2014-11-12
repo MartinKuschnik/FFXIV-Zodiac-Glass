@@ -5,7 +5,7 @@
 
     public class FFXIVMemoryMap
     {
-        private static readonly Lazy<FFXIVMemoryMap> _default = new Lazy<FFXIVMemoryMap>(() => new FFXIVMemoryMap() { InventoryAddress = new int[] { 0x103B320, 0 }, EquippedMainHandOffset = 0x1988, EquippedOffHandOffset = 0x19C8, SpiritBondOffset = 0x8 });
+        private static readonly Lazy<FFXIVMemoryMap> _default = new Lazy<FFXIVMemoryMap>(() => new FFXIVMemoryMap() { ItemSetPointer = new FFXIVPointer() { BaseAddressOffset = 0x0103B320, Offsets = new int[] { 0x60, 0x0 } } });
 
         public static FFXIVMemoryMap Default
         {
@@ -15,23 +15,17 @@
             }
         }
 
-        public int EquippedMainHandOffset { get; set; }
-
-        public int EquippedOffHandOffset { get; set; }
-
-        public int SpiritBondOffset { get; set; }
-
-        public int[] InventoryAddress { get; set; }
+        public FFXIVPointer ItemSetPointer { get; set; }
 
         public override int GetHashCode()
         {
-            return this.EquippedMainHandOffset.GetHashCode() + this.EquippedOffHandOffset.GetHashCode() + this.SpiritBondOffset.GetHashCode() + (this.InventoryAddress ?? new int[0]).GetHashCode();
+            return this.ItemSetPointer.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
             FFXIVMemoryMap other = obj as FFXIVMemoryMap;
-            return other != null && this.EquippedMainHandOffset == other.EquippedMainHandOffset && this.EquippedOffHandOffset == other.EquippedOffHandOffset && this.SpiritBondOffset == other.SpiritBondOffset && Enumerable.SequenceEqual(this.InventoryAddress, other.InventoryAddress);
+            return other != null && this.ItemSetPointer.Equals(other.ItemSetPointer);
         }
     }
 }

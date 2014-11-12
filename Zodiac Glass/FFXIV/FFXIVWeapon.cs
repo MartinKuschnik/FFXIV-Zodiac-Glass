@@ -3,24 +3,23 @@
     using System.Diagnostics;
     using System.Runtime.InteropServices;
 
-    [StructLayout(LayoutKind.Explicit, Size = 10)]
+    [StructLayout(LayoutKind.Explicit, Size=64)]
     internal unsafe struct FFXIVWeapon
     {
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public static readonly FFXIVWeapon None = default(FFXIVWeapon);
+
         [FieldOffset(0)]
-        private fixed byte raw[10];
+        private fixed byte raw[64];
 
         [FieldOffset(0)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly int id;
 
-        [FieldOffset(4)]
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private fixed byte byte4to7[4];
-
         [FieldOffset(8)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly short lightAmount;
-
 
         public int ID
         {
@@ -38,5 +37,24 @@
             }
         }
 
+        public override int GetHashCode()
+        {
+            return this.id.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is FFXIVWeapon && ((FFXIVWeapon)obj).id == this.id;
+        }
+        
+        public static bool operator ==(FFXIVWeapon a, FFXIVWeapon b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(FFXIVWeapon a, FFXIVWeapon b)
+        {
+            return !a.Equals(b);
+        }
     }
 }
