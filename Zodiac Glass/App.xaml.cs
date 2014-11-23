@@ -148,7 +148,7 @@
             newItem.Click += (s, e) => Process.Start("http://www.reddit.com/r/ffxiv/comments/2gm1ru/nexus_light_information/");
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
 
-            newItem = new ToolStripMenuItem("Update");
+            newItem = new ToolStripMenuItem("Update Memory Addresses");
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "update.ico"))).Stream);
             newItem.Click += (s, e) => {
                 if (this.UpdateMemoryMap())
