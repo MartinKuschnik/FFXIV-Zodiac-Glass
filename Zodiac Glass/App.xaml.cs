@@ -63,10 +63,12 @@
 
                     base.OnStartup(e);
 
+                    this.UpgradeSettingsIfNecessary();
+
                     this.ReadFFXIVConfig();
 
                     this.LoadMemoryMap();
-
+                    
                     this.UpdateMemoryMap();
                     
                     this.processObserver.ProcessStarted += this.OnProcessStarted;
@@ -103,6 +105,17 @@
                 mutex.ReleaseMutex();
 
             base.OnExit(e);
+        }
+
+        private void UpgradeSettingsIfNecessary()
+        {
+            if (!Enum.IsDefined(typeof(OverlayDisplayMode), Settings.Default.OverlayDisplayMode))
+            {
+                Settings.Default.Upgrade();
+
+                if (!Enum.IsDefined(typeof(OverlayDisplayMode), Settings.Default.OverlayDisplayMode))
+                    Settings.Default.OverlayDisplayMode = (int)default(OverlayDisplayMode);
+            }
         }
 
         private void ReadFFXIVConfig()
