@@ -52,7 +52,7 @@ namespace ZodiacGlass.Diagnostics
 
         public void Dispose()
         {
-            if (this.streamWriter.Value != null)
+            if (this.streamWriter.IsValueCreated && this.streamWriter.Value != null)
             {
                 this.streamWriter.Value.Dispose();
             }

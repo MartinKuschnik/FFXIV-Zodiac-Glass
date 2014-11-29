@@ -81,8 +81,6 @@
                 {
                     MessageBox.Show("Only one instance of Zodiac Glass be run!", "Zodiac Glass", MessageBoxButton.OK, MessageBoxImage.Warning);
 
-                    this.log.Write(LogLevel.Info, "Zodiac Glass already running. Application will be closed.");
-
                     this.Shutdown();
                 }
             }
