@@ -7,6 +7,7 @@
     using System.Windows.Interop;
     using ZodiacGlass.FFXIV;
     using ZodiacGlass.Native;
+    using WindowStyle = ZodiacGlass.Native.WindowStyle;
 
     public partial class OverlayWindow : Window
     {
@@ -76,12 +77,23 @@
             {
                 this.handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
                 this.SetProcessWindowAsOwner();
+                this.SetWindowStyle();
             }
         }
 
         private void SetProcessWindowAsOwner()
         {
             NativeMethods.SetWindowLongPtr(this.handle, WindowLong.GWL_HWNDPARENT, this.process.MainWindowHandle);
+        }
+
+        private void SetWindowStyle()
+        {
+            WindowStyle style = (WindowStyle)NativeMethods.GetWindowLong(this.handle, WindowLong.GWL_STYLE);
+
+            // to avoid activating and deactivating the window (like WinForms)
+            style |= Native.WindowStyle.WS_CHILD;
+
+            NativeMethods.SetWindowLongPtr(this.handle, WindowLong.GWL_STYLE, (IntPtr)style);
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -110,6 +122,10 @@
                 else
                     this.DisplayMode = OverlayDisplayMode.Normal;
             }
+
+            // reactivate the game window
+            if (this.process != null)
+                NativeMethods.SetActiveWindow(this.process.MainWindowHandle);
         }
     }
 }

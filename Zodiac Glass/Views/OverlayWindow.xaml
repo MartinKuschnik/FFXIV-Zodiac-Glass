@@ -4,8 +4,12 @@
         xmlns:ZG="clr-namespace:ZodiacGlass"
         Title="OverlayWindow"
         ShowActivated="False"
-        ShowInTaskbar="False" Focusable="False"
-        Height="24" WindowStartupLocation="Manual" Left="5" Top="5"
+        ShowInTaskbar="False"
+        Focusable="False"
+        Height="24"
+        WindowStartupLocation="Manual"
+        Left="5"
+        Top="5"
         SizeToContent="Width"
         WindowStyle="None"
         Background="Transparent"
@@ -15,21 +19,24 @@
         <ZG:OverlayViewModel />
     </Window.DataContext>
     <Window.Resources>
-            <DropShadowEffect x:Key="TextShadow" ShadowDepth="2"                              
-                              Color="Black"
-                              Opacity="0.2"
-                              BlurRadius="0" />
+        <DropShadowEffect x:Key="TextShadow"
+                          ShadowDepth="2"
+                          Color="Black"
+                          Opacity="0.2"
+                          BlurRadius="0" />
     </Window.Resources>
     <StackPanel Orientation="Horizontal"
                 Visibility="{Binding OverlayVisibility}"
-                Height="24" MouseLeftButtonUp="OnMouseLeftButtonUp"
+                Height="24"
+                MouseLeftButtonUp="OnMouseLeftButtonUp"
                 MouseLeftButtonDown="OnMouseLeftButtonDown">
         <Image Height="24"
                Source="{Binding ClassSymbolUri}" />
         <TextBlock Foreground="#FFDED2B8"
                    Effect="{StaticResource TextShadow}"
                    Visibility="{Binding MainHandVisibility}"
-                   Text="{Binding EquippedMainHandLightAmount}" FontWeight="SemiBold"
+                   Text="{Binding EquippedMainHandLightAmount}"
+                   FontWeight="SemiBold"
                    FontSize="16">
         </TextBlock>
         <TextBlock Foreground="#FFDED2B8"
