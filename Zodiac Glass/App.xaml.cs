@@ -250,8 +250,30 @@
 
         private void AttachToExistingProcesses()
         {
-            foreach (Process process in Process.GetProcessesByName(App.XIVProcessName))
-                this.CreateOverlay(process);
+            var processes = Process.GetProcessesByName(App.XIVProcessName).ToArray();
+
+            switch (processes.Count())
+            {
+                case 0:
+
+                    break;
+                case 1:
+
+                    Process singleProcess = processes.First();
+                    this.CreateOverlay(singleProcess);
+
+                    // activate the game window
+                    Native.NativeMethods.SetActiveWindow(singleProcess.MainWindowHandle);
+
+                    break;
+                default:
+
+                    foreach (Process process in processes)
+                        this.CreateOverlay(process);
+
+                    break;
+            }
+
         }
 
         private void CreateOverlay(Process process)

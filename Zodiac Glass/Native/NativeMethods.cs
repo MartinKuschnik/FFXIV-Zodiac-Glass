@@ -17,6 +17,9 @@
         [DllImport("user32.dll", EntryPoint = "GetWindowLongA", SetLastError = true)]
         internal static extern int GetWindowLong(IntPtr hWnd, WindowLong nIndex);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern IntPtr SetActiveWindow(IntPtr hWnd);
+
         private static class Internal
         {
             [DllImport("user32.dll", CharSet = CharSet.Auto)]
