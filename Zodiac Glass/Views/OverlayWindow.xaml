@@ -22,11 +22,9 @@
     </Window.Resources>
     <StackPanel Orientation="Horizontal"
                 Visibility="{Binding OverlayVisibility}"
-                Height="24"
+                Height="24" MouseLeftButtonUp="OnMouseLeftButtonUp"
                 MouseLeftButtonDown="OnMouseLeftButtonDown">
         <Image Height="24"
-               MouseLeftButtonDown="OnImageMouseLeftButtonDown"
-               MouseLeftButtonUp="OnImageMouseLeftButtonUp"
                Source="{Binding ClassSymbolUri}" />
         <TextBlock Foreground="#FFDED2B8"
                    Effect="{StaticResource TextShadow}"

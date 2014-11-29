@@ -12,12 +12,12 @@
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Process process;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Stopwatch mouseLeftButtonDownStopwatch;
-
+        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private IntPtr handle;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private bool mouseMovedAfterMouseLeftButtonDown;
         
         public OverlayWindow(Process process)
         {
@@ -86,19 +86,24 @@
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            this.DragMove();
+            this.mouseMovedAfterMouseLeftButtonDown = false;
+            this.MouseMove += this.OnMouseMoveAfterMouseLeftButtonDown;
         }
 
-        private void OnImageMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseMoveAfterMouseLeftButtonDown(object sender, MouseEventArgs e)
         {
-            this.mouseLeftButtonDownStopwatch = Stopwatch.StartNew();
+            this.mouseMovedAfterMouseLeftButtonDown = true;
+            this.MouseMove -= this.OnMouseMoveAfterMouseLeftButtonDown;
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+                this.DragMove();
         }
 
-        private void OnImageMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            this.mouseLeftButtonDownStopwatch.Stop();
+            this.MouseMove -= this.OnMouseMoveAfterMouseLeftButtonDown;
 
-            if (this.mouseLeftButtonDownStopwatch.ElapsedMilliseconds < 300)
+            if (!this.mouseMovedAfterMouseLeftButtonDown)
             {
                 if (this.DisplayMode == OverlayDisplayMode.Normal)
                     this.DisplayMode = OverlayDisplayMode.Percentage;
