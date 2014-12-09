@@ -165,7 +165,14 @@
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "update.ico"))).Stream);
             newItem.Click += (s, e) => {
                 if (this.UpdateMemoryMap())
+                {
+                    foreach (Process process in this.overlays.Select(x => x.Key).ToArray())
+                    {
+                        this.ReCreateOverlay(process);
+                    }
+
                     this.notifyIcon.ShowBalloonTip(2500, "Update successfully.", "I hope it works now\r\n\r\n   ( ͡° ͜ʖ ͡°)\r\n", System.Windows.Forms.ToolTipIcon.Info);
+                }
                 else
                     this.notifyIcon.ShowBalloonTip(2500, "Update failed.", "No update available\r\n\r\n   （　´_ゝ`）\r\n", System.Windows.Forms.ToolTipIcon.Warning);
             };
@@ -308,6 +315,20 @@
             {
                 this.log.WriteException("Creating overlay failed.", ex);
             }
+        }
+
+        private bool ReCreateOverlay(Process process)
+        {
+            this.DestroyOverlay(process);
+
+            if (!process.HasExited)
+            {
+                this.CreateOverlay(process);
+
+                return true;
+            }
+
+            return false;
         }
 
         private bool DestroyOverlay(Process process)
