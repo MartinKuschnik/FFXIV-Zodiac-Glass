@@ -69,7 +69,9 @@
 
                     this.LoadMemoryMap();
                     
+#if !DEBUG
                     this.UpdateMemoryMap();
+#endif
                     
                     this.processObserver.ProcessStarted += this.OnProcessStarted;
 
@@ -194,7 +196,11 @@
         {
             try
             {
+#if DEBUG
+                this.currentMemoryMap = FFXIVMemoryMap.Default;
+#else
                 this.currentMemoryMap = Settings.Default.MemoryMap ?? FFXIVMemoryMap.Default;
+#endif
             }
             catch (Exception ex)
             {
