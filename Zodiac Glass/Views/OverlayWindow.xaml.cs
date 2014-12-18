@@ -122,10 +122,6 @@
                 else
                     this.DisplayMode = OverlayDisplayMode.Normal;
             }
-
-            // reactivate the game window
-            if (this.process != null)
-                NativeMethods.SetActiveWindow(this.process.MainWindowHandle);
         }
     }
 }
