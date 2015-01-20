@@ -9,6 +9,6 @@ namespace ZodiacGlass
     {
         internal const string Version = "1.0.1501.20001"; // X.X.Year_Year_Month_Mont.Day_Day_BuildOfDayBuildOfDayBuildOfDay
         internal const string Name = "Zodiac Glass";
-        internal const string Copyright = "© 2014 Invisible Shield";
+        internal const string Copyright = "© 2015 Invisible Shield";
     }
 }

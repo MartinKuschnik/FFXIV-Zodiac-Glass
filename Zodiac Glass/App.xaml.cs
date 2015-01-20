@@ -71,7 +71,14 @@
                     this.LoadMemoryMap();
 
 #if !DEBUG
-                    this.UpdateMemoryMap();
+                    try
+                    {
+                        this.UpdateMemoryMap();
+                    }
+                    catch (WebException)
+                    {
+                        // ignore it
+                    }
 #endif
 
                     this.processObserver.ProcessStarted += this.OnProcessStarted;
@@ -173,17 +180,24 @@
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "update.ico"))).Stream);
             newItem.Click += (s, e) =>
             {
-                if (this.UpdateMemoryMap())
+                try
                 {
-                    foreach (Process process in this.overlays.Select(x => x.Key).ToArray())
+                    if (this.UpdateMemoryMap())
                     {
-                        this.ReCreateOverlay(process);
-                    }
+                        foreach (Process process in this.overlays.Select(x => x.Key).ToArray())
+                        {
+                            this.ReCreateOverlay(process);
+                        }
 
-                    this.notifyIcon.ShowBalloonTip(2500, "Update successfully.", "I hope it works now\r\n\r\n   ( ͡° ͜ʖ ͡°)\r\n", System.Windows.Forms.ToolTipIcon.Info);
+                        this.notifyIcon.ShowBalloonTip(2500, "Update successfully.", "I hope it works now\r\n\r\n   ( ͡° ͜ʖ ͡°)\r\n", System.Windows.Forms.ToolTipIcon.Info);
+                    }
+                    else
+                        this.notifyIcon.ShowBalloonTip(2500, "Update failed.", "No update available\r\n\r\n   （　´_ゝ`）\r\n", System.Windows.Forms.ToolTipIcon.Warning);
                 }
-                else
-                    this.notifyIcon.ShowBalloonTip(2500, "Update failed.", "No update available\r\n\r\n   （　´_ゝ`）\r\n", System.Windows.Forms.ToolTipIcon.Warning);
+                catch (WebException)
+                {
+                    this.notifyIcon.ShowBalloonTip(5000, "Update failed.", "Can't connect to update file on github.\r\nPlease check firewall.\r\n\r\n   （　´_ゝ`）\r\n", System.Windows.Forms.ToolTipIcon.Error);
+                }
             };
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
 
@@ -258,6 +272,11 @@
 
                     return false;
                 }
+            }
+            catch (WebException ex)
+            {
+                this.log.WriteException("Updating MemoryMap failed.", ex);
+                throw;
             }
             catch (Exception ex)
             {
