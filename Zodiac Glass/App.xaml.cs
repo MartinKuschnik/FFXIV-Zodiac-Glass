@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.Drawing;
     using System.IO;
@@ -68,16 +69,26 @@
                     this.ReadFFXIVConfig();
 
                     this.LoadMemoryMap();
-                    
+
 #if !DEBUG
                     this.UpdateMemoryMap();
 #endif
-                    
+
                     this.processObserver.ProcessStarted += this.OnProcessStarted;
 
-                    this.AttachToExistingProcesses();
-
                     this.ConfigureNotifyIcon();
+
+                    try
+                    {
+                        this.AttachToExistingProcesses();
+
+                        if (!this.overlays.Any())
+                            this.notifyIcon.ShowBalloonTip(2500, "Zodiac Glass started", "Please start FINAL FANTASY XIV: A Realm Reborn to see the overlay.", System.Windows.Forms.ToolTipIcon.Info);
+                    }
+                    catch (Win32Exception)
+                    {
+                        this.notifyIcon.ShowBalloonTip(2500, "Attach to FF XIV process failed", "Ensure you're running this program as administrator.", System.Windows.Forms.ToolTipIcon.Error);
+                    }
                 }
                 else
                 {
@@ -92,7 +103,7 @@
                 throw;
             }
         }
-        
+
         protected override void OnExit(ExitEventArgs e)
         {
             foreach (Process process in this.overlays.Keys.ToArray())
@@ -100,7 +111,7 @@
 
             this.processObserver.Dispose();
             this.log.Dispose();
-            
+
             if (this.isMutexOwner)
                 mutex.ReleaseMutex();
 
@@ -146,9 +157,6 @@
 
             this.notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
 
-            if (!this.overlays.Any())
-                this.notifyIcon.ShowBalloonTip(2500, "Zodiac Glass started.", "Please start FINAL FANTASY XIV: A Realm Reborn to see the overlay.", System.Windows.Forms.ToolTipIcon.Info);
-
             ToolStripMenuItem newItem;
 
             newItem = new ToolStripMenuItem("Bounus Light");
@@ -163,7 +171,8 @@
 
             newItem = new ToolStripMenuItem("Update Memory Addresses");
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "update.ico"))).Stream);
-            newItem.Click += (s, e) => {
+            newItem.Click += (s, e) =>
+            {
                 if (this.UpdateMemoryMap())
                 {
                     foreach (Process process in this.overlays.Select(x => x.Key).ToArray())
@@ -311,6 +320,10 @@
 
                 this.CheckGameWindowMode(process);
             }
+            catch (Win32Exception ex)
+            {
+                throw ex;
+            }
             catch (Exception ex)
             {
                 this.log.WriteException("Creating overlay failed.", ex);
@@ -367,10 +380,10 @@
         {
             OverlayWindow overlay = sender as OverlayWindow;
 
-            if (overlay != null)            {
-
+            if (overlay != null)
+            {
                 Settings.Default.OverlayPosition = new Point((int)overlay.Left, (int)overlay.Top);
-                Settings.Default.Save(); 
+                Settings.Default.Save();
             }
         }
 
@@ -410,7 +423,7 @@
         private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             this.log.WriteException("Unhandled exception.", e.Exception);
-        } 
+        }
 
         #endregion
     }

@@ -6,12 +6,12 @@
          - open Cheat Engine
          - attach to FFXIV process
          - searcht to equipped weapon id
-         - ponter scan (unchack: only find paths with static addresses & max level : 2)
+         - ponter scan (unchecck: only find paths with static addresses & max level : 2)
          - repeat it
          
          (dont forget-FFXIVItemSet(currrent 8) offset of last offset)
     -->
-    <BaseAddressOffset>17023776</BaseAddressOffset>
+    <BaseAddressOffset>17547376</BaseAddressOffset>
     <Offsets>
       <int>96</int>
       <int>0</int>
