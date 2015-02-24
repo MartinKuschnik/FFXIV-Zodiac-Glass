@@ -246,7 +246,7 @@ namespace ZodiacGlass
                     }
                 }
 
-                return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / 2000, 2));
+                return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / MaxLightAmount, 2));
             }
         }
 
