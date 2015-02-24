@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{A4C1B7D3-69E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pics", "pics", "{DDC6E237-F429-48A5-B1B9-4A7801D68341}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\Desktop\prev.jpg = ..\..\..\..\Desktop\prev.jpg
+		doc\pisc\prev.jpg = doc\pisc\prev.jpg
 	EndProjectSection
 EndProject
 Global
