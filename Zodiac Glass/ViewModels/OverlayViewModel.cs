@@ -61,7 +61,6 @@ namespace ZodiacGlass
                     this.observer = null;
                 }
 
-
                 this.glass = value;
 
                 if (this.glass != null)
@@ -91,13 +90,25 @@ namespace ZodiacGlass
 
             if (!this.ignoreNextMainHandAddition)
             {
-                this.MainHandAddition = e.NewValue - e.OldValue;
-
-                Task.Factory.StartNew(() =>
+                if (this.glass != null)
                 {
-                    Thread.Sleep(AdditionLifeTime);
-                    this.MainHandAddition = 0;
-                });
+                    FFXIVItemSet itemSet = this.glass.ReadItemSet();
+
+                    if (Enum.IsDefined(typeof(FFXIVNovusWeaponID), itemSet.Weapon.ID))
+                    {
+                        this.MainHandAddition = e.NewValue - e.OldValue;
+                    }
+                    else if (Enum.IsDefined(typeof(FFXIVZodiacWeaponID), itemSet.Weapon.ID))
+                    {
+                        this.MainHandAddition = FFXIVZodiacWeaponLightCalculator.Calculate(e.NewValue) - FFXIVZodiacWeaponLightCalculator.Calculate(e.OldValue);
+                    }
+
+                    Task.Factory.StartNew(() =>
+                    {
+                        Thread.Sleep(AdditionLifeTime);
+                        this.MainHandAddition = 0;
+                    });
+                }
             }
             else
             {
@@ -145,10 +156,8 @@ namespace ZodiacGlass
 
         public Uri ClassSymbolUri
         {
-
             get
             {
-
                 if (this.glass != null)
                 {
                     string className = null;
@@ -226,7 +235,15 @@ namespace ZodiacGlass
                 if (this.glass != null)
                 {
                     FFXIVItemSet itemSet = this.glass.ReadItemSet();
-                    val = itemSet.Weapon.LightAmount;
+
+                    if (Enum.IsDefined(typeof(FFXIVNovusWeaponID), itemSet.Weapon.ID))
+                    {
+                        val = itemSet.Weapon.LightAmount;
+                    }
+                    else if (Enum.IsDefined(typeof(FFXIVZodiacWeaponID), itemSet.Weapon.ID))
+                    {
+                        val = FFXIVZodiacWeaponLightCalculator.Calculate(itemSet.Weapon.LightAmount);
+                    }
                 }
 
                 return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / 2000, 2));
@@ -245,7 +262,27 @@ namespace ZodiacGlass
                     val = itemSet.Shield.LightAmount;
                 }
 
-                return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / 2000, 2));
+                return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / MaxLightAmount, 2));
+            }
+        }
+
+        public float MaxLightAmount
+        {
+            get
+            {
+                if (this.glass != null)
+                {
+                    if (Enum.IsDefined(typeof(FFXIVNovusWeaponID), this.glass.ReadItemSet().Weapon.ID))
+                    {
+                        return 2000;
+                    }
+                    else if (Enum.IsDefined(typeof(FFXIVZodiacWeaponID), this.glass.ReadItemSet().Weapon.ID))
+                    {
+                        return FFXIVZodiacWeaponLightCalculator.MaxLightAmount;
+                    }
+                }
+
+                return float.MaxValue;
             }
         }
 
@@ -257,7 +294,6 @@ namespace ZodiacGlass
             }
             set
             {
-
                 if (mode != value)
                 {
                     mode = value;
@@ -268,8 +304,6 @@ namespace ZodiacGlass
             }
         }
 
-
-
         public int MainHandAddition
         {
             get
@@ -278,9 +312,12 @@ namespace ZodiacGlass
             }
             set
             {
-                this.mainHandAddition = value;
-                this.NotifyPropertyChanged(() => this.MainHandAddition);
-                this.NotifyPropertyChanged(() => this.MainHandAdditionVisibility);
+                if (this.mainHandAddition != value)
+                {
+                    this.mainHandAddition = value;
+                    this.NotifyPropertyChanged(() => this.MainHandAddition);
+                    this.NotifyPropertyChanged(() => this.MainHandAdditionVisibility);
+                }
             }
         }
 
@@ -292,9 +329,12 @@ namespace ZodiacGlass
             }
             set
             {
-                this.offHandAddition = value;
-                this.NotifyPropertyChanged(() => this.OffHandAddition);
-                this.NotifyPropertyChanged(() => this.OffHandAdditionVisibility);
+                if (this.offHandAddition != value)
+                {
+                    this.offHandAddition = value;
+                    this.NotifyPropertyChanged(() => this.OffHandAddition);
+                    this.NotifyPropertyChanged(() => this.OffHandAdditionVisibility);
+                }
             }
         }
         public Visibility MainHandAdditionVisibility
@@ -325,7 +365,7 @@ namespace ZodiacGlass
         {
             get
             {
-                return this.glass != null && 
+                return this.glass != null &&
                     (Enum.IsDefined(typeof(FFXIVNovusWeaponID), this.glass.ReadItemSet().Weapon.ID)
                         || Enum.IsDefined(typeof(FFXIVZodiacWeaponID), this.glass.ReadItemSet().Weapon.ID))
                     ? Visibility.Visible : Visibility.Collapsed;
