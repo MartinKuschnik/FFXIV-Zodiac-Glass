@@ -155,45 +155,57 @@ namespace ZodiacGlass
 
                     FFXIVItemSet itemSet = this.glass.ReadItemSet();
 
-                    if (itemSet.Shield.ID == (int)FFXIVNovusWeaponID.HolyShieldNovus)
+                    if (itemSet.Weapon.ID == (int)FFXIVNovusWeaponID.CurtanaNovus
+                        || itemSet.Weapon.ID == (int)FFXIVZodiacWeaponID.Exkalibur
+                        || itemSet.Shield.ID == (int)FFXIVNovusWeaponID.HolyShieldNovus
+                        || itemSet.Shield.ID == (int)FFXIVZodiacWeaponID.AegisShield)
                     {
                         className = "paladin";
                     }
-                    else
+                    else if (itemSet.Weapon.ID == (int)FFXIVNovusWeaponID.SphairaiNovus
+                      || itemSet.Weapon.ID == (int)FFXIVZodiacWeaponID.KaiserKnuckles)
                     {
-                        switch ((FFXIVNovusWeaponID)itemSet.Weapon.ID)
-                        {
-                            case FFXIVNovusWeaponID.CurtanaNovus:
-                                className = "paladin";
-                                break;
-                            case FFXIVNovusWeaponID.SphairaiNovus:
-                                className = "monk";
-                                break;
-                            case FFXIVNovusWeaponID.BravuraNovus:
-                                className = "warrior";
-                                break;
-                            case FFXIVNovusWeaponID.GaeBolgNovus:
-                                className = "dragoon";
-                                break;
-                            case FFXIVNovusWeaponID.ArtemisBowNovus:
-                                className = "bard";
-                                break;
-                            case FFXIVNovusWeaponID.ThyrusNovus:
-                                className = "whitemage";
-                                break;
-                            case FFXIVNovusWeaponID.StardustRodNovus:
-                                className = "blackmage";
-                                break;
-                            case FFXIVNovusWeaponID.TheVeilofWiyuNovus:
-                                className = "summoner";
-                                break;
-                            case FFXIVNovusWeaponID.OmnilexNovus:
-                                className = "scholar";
-                                break;
-                            case FFXIVNovusWeaponID.YoshimitsuNovus:
-                                className = "ninja";
-                                break;
-                        }
+                        className = "monk";
+                    }
+                    else if (itemSet.Weapon.ID == (int)FFXIVNovusWeaponID.BravuraNovus
+                      || itemSet.Weapon.ID == (int)FFXIVZodiacWeaponID.Ragnarok)
+                    {
+                        className = "warrior";
+                    }
+                    else if (itemSet.Weapon.ID == (int)FFXIVNovusWeaponID.GaeBolgNovus
+                      || itemSet.Weapon.ID == (int)FFXIVZodiacWeaponID.Longinus)
+                    {
+                        className = "dragoon";
+                    }
+                    else if (itemSet.Weapon.ID == (int)FFXIVNovusWeaponID.ArtemisBowNovus
+                      || itemSet.Weapon.ID == (int)FFXIVZodiacWeaponID.YoichiBow)
+                    {
+                        className = "bard";
+                    }
+                    else if (itemSet.Weapon.ID == (int)FFXIVNovusWeaponID.ThyrusNovus
+                      || itemSet.Weapon.ID == (int)FFXIVZodiacWeaponID.Nirvana)
+                    {
+                        className = "whitemage";
+                    }
+                    else if (itemSet.Weapon.ID == (int)FFXIVNovusWeaponID.StardustRodNovus
+                      || itemSet.Weapon.ID == (int)FFXIVZodiacWeaponID.LilithRod)
+                    {
+                        className = "blackmage";
+                    }
+                    else if (itemSet.Weapon.ID == (int)FFXIVNovusWeaponID.TheVeilofWiyuNovus
+                      || itemSet.Weapon.ID == (int)FFXIVZodiacWeaponID.Apocalypse)
+                    {
+                        className = "summoner";
+                    }
+                    else if (itemSet.Weapon.ID == (int)FFXIVNovusWeaponID.OmnilexNovus
+                      || itemSet.Weapon.ID == (int)FFXIVZodiacWeaponID.LastResort)
+                    {
+                        className = "scholar";
+                    }
+                    else if (itemSet.Weapon.ID == (int)FFXIVNovusWeaponID.YoshimitsuNovus
+                      || itemSet.Weapon.ID == (int)FFXIVZodiacWeaponID.SasukesBlades)
+                    {
+                        className = "ninja";
                     }
 
                     if (className != null)
@@ -313,7 +325,10 @@ namespace ZodiacGlass
         {
             get
             {
-                return this.glass != null && Enum.IsDefined(typeof(FFXIVNovusWeaponID), this.glass.ReadItemSet().Weapon.ID) ? Visibility.Visible : Visibility.Collapsed;
+                return this.glass != null && 
+                    (Enum.IsDefined(typeof(FFXIVNovusWeaponID), this.glass.ReadItemSet().Weapon.ID)
+                        || Enum.IsDefined(typeof(FFXIVZodiacWeaponID), this.glass.ReadItemSet().Weapon.ID))
+                    ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 

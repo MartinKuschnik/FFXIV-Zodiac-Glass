@@ -83,6 +83,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FFXIV\FFXIVZodiacWeaponID.cs" />
     <Compile Include="Native\WindowStyle.cs" />
     <Compile Include="Properties\AssemblyProperties.cs" />
     <Compile Include="FFXIV\FFXIVConfig.cs" />
