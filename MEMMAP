@@ -11,7 +11,7 @@
          
          (dont forget-FFXIVItemSet(currrent 8) offset of last offset)
     -->
-    <BaseAddressOffset>17547376</BaseAddressOffset>
+    <BaseAddressOffset>17912368</BaseAddressOffset>
     <Offsets>
       <int>96</int>
       <int>0</int>
