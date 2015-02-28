@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Version>1.1.1502.25001</Version>
+  <Content>
+    <File>
+      <Source>https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/releases/download/v1.1.1502.25001/Zodiac.Glass.exe</Source>
+      <Target>Zodiac Glass.exe</Target>
+    </File>
+  </Content>
+</Update>

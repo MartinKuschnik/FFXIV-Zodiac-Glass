@@ -6,13 +6,10 @@
         ShowActivated="False"
         ShowInTaskbar="False"
         Focusable="False"
-        Height="24"
         WindowStartupLocation="Manual"
-        Left="5"
-        Top="5"
-        SizeToContent="Width"
+        SizeToContent="WidthAndHeight"
         WindowStyle="None"
-        Background="Transparent"
+        Background="#01000000"
         AllowsTransparency="True"
         ResizeMode="NoResize">
     <Window.DataContext>
@@ -26,8 +23,10 @@
                           BlurRadius="0" />
     </Window.Resources>
     <StackPanel Orientation="Horizontal"
+                Cursor="pack://application:,,,/Zodiac Glass;component/Resources/cursors/arr-link.cur"                
                 Visibility="{Binding OverlayVisibility}"
                 Height="24"
+                Margin="3,3,0,0"                
                 MouseLeftButtonUp="OnMouseLeftButtonUp"
                 MouseLeftButtonDown="OnMouseLeftButtonDown">
         <Image Height="24"

@@ -83,9 +83,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FFXIV\FFXIVMahatma.cs" />
+    <Compile Include="FFXIV\FFXIVStructSizes.cs" />
     <Compile Include="FFXIV\FFXIVZodiacWeaponID.cs" />
-    <Compile Include="FFXIV\FFXIVZodiacWeaponLightCalculator.cs" />
+    <Compile Include="Misc\IOverlay.cs" />
+    <Compile Include="Native\RECT.cs" />
+    <Compile Include="Native\SetWindowPosFlags.cs" />
     <Compile Include="Native\WindowStyle.cs" />
+    <Compile Include="Native\WindowStyleEx.cs" />
     <Compile Include="Properties\AssemblyProperties.cs" />
     <Compile Include="FFXIV\FFXIVConfig.cs" />
     <Compile Include="FFXIV\FFXIVConfigReader.cs" />
@@ -104,6 +109,8 @@
     <Compile Include="Misc\ProcessEventArgs.cs" />
     <Compile Include="Misc\ProcessObserver.cs" />
     <Compile Include="Misc\ValueChangedEventArgs.cs" />
+    <Compile Include="Updating\File.cs" />
+    <Compile Include="Updating\Update.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Native\WindowLong.cs" />
     <Compile Include="FFXIV\FFXIVMemoryObserver.cs" />
@@ -145,6 +152,8 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\cursors\arr-loading.ani" />
+    <None Include="Resources\cursors\arr-pointer-loading.ani" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -184,6 +193,50 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\update.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\cursors\arr-arrow-up.cur" />
+    <Resource Include="Resources\cursors\arr-chat-bubble.cur" />
+    <Resource Include="Resources\cursors\arr-forbidden.cur" />
+    <Resource Include="Resources\cursors\arr-hand-closed.cur" />
+    <Resource Include="Resources\cursors\arr-hand-open.cur" />
+    <Resource Include="Resources\cursors\arr-link.cur" />
+    <Resource Include="Resources\cursors\arr-magnifier.cur" />
+    <Resource Include="Resources\cursors\arr-move.cur" />
+    <Resource Include="Resources\cursors\arr-pointer-boot.cur" />
+    <Resource Include="Resources\cursors\arr-pointer-chat.cur" />
+    <Resource Include="Resources\cursors\arr-pointer-hand.cur" />
+    <Resource Include="Resources\cursors\arr-pointer-help-1.cur" />
+    <Resource Include="Resources\cursors\arr-pointer-help-2.cur" />
+    <Resource Include="Resources\cursors\arr-pointer-magnifier.cur" />
+    <Resource Include="Resources\cursors\arr-pointer.cur" />
+    <Resource Include="Resources\cursors\arr-red-X.cur" />
+    <Resource Include="Resources\cursors\arr-resize-diag-1.cur" />
+    <Resource Include="Resources\cursors\arr-resize-diag-2.cur" />
+    <Resource Include="Resources\cursors\arr-resize-hor.cur" />
+    <Resource Include="Resources\cursors\arr-resize-ver.cur" />
+    <Resource Include="Resources\cursors\arr-small-arrow-up.cur" />
+    <Resource Include="Resources\cursors\arr-small-forbidden.cur" />
+    <Resource Include="Resources\cursors\arr-small-hand-open.cur" />
+    <Resource Include="Resources\cursors\arr-small-link.cur" />
+    <Resource Include="Resources\cursors\arr-small-pointer-help-2.cur" />
+    <Resource Include="Resources\cursors\arr-small-pointer-magnifier.cur" />
+    <Resource Include="Resources\cursors\arr-small-pointer.cur" />
+    <Resource Include="Resources\cursors\arr-small-red-X.cur" />
+    <Resource Include="Resources\cursors\arr-small-resize-diag-1.cur" />
+    <Resource Include="Resources\cursors\arr-small-resize-diag-2.cur" />
+    <Resource Include="Resources\cursors\arr-small-resize-hor.cur" />
+    <Resource Include="Resources\cursors\arr-small-resize-ver.cur" />
+    <Resource Include="Resources\cursors\arr-small-sword.cur" />
+    <Resource Include="Resources\cursors\arr-small-text.cur" />
+    <Resource Include="Resources\cursors\arr-sub-menu.cur" />
+    <Resource Include="Resources\cursors\arr-sword.cur" />
+    <Resource Include="Resources\cursors\arr-text.cur" />
+    <Resource Include="Resources\cursors\arr-zoom-in.cur" />
+    <Resource Include="Resources\cursors\arr-zoom-out.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\reset.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

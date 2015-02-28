@@ -3,9 +3,8 @@
     using System;
     using System.Diagnostics;
 
-    class ValueChangedEventArgs<T> : EventArgs
+    public class ValueChangedEventArgs<T> : EventArgs
     {
-
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly T oldValue;
 
@@ -17,7 +16,6 @@
             this.oldValue = oldValue;
             this.newValue = newValue;
         }
-
 
         public T OldValue
         {
@@ -34,6 +32,5 @@
                 return this.newValue;
             }
         }
-
     }
 }

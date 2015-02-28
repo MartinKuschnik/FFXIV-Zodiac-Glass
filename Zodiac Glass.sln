@@ -10,15 +10,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		MEMMAP = MEMMAP
 		README.md = README.md
+		UPDATE = UPDATE
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zodiac Glass.Tests", "Zodiac Glass.Tests\Zodiac Glass.Tests.csproj", "{4D1AD464-DDDD-4BC6-B6D1-807ACDF282C0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{A4C1B7D3-69E4-474C-B224-E68AE006E93E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pics", "pics", "{DDC6E237-F429-48A5-B1B9-4A7801D68341}"
 	ProjectSection(SolutionItems) = preProject
-		doc\pisc\prev.jpg = doc\pisc\prev.jpg
+		doc\pics\notify_icon_context_menu.jpg = doc\pics\notify_icon_context_menu.jpg
+		doc\pics\overlay_zeta.jpg = doc\pics\overlay_zeta.jpg
+		doc\pics\overlay_zodiac.jpg = doc\pics\overlay_zodiac.jpg
 	EndProjectSection
 EndProject
 Global
@@ -31,10 +32,6 @@ Global
 		{CEF678D2-4FF4-4FCE-8B03-CC1DB468521C}.Debug|x86.Build.0 = Debug|x86
 		{CEF678D2-4FF4-4FCE-8B03-CC1DB468521C}.Release|x86.ActiveCfg = Release|x86
 		{CEF678D2-4FF4-4FCE-8B03-CC1DB468521C}.Release|x86.Build.0 = Release|x86
-		{4D1AD464-DDDD-4BC6-B6D1-807ACDF282C0}.Debug|x86.ActiveCfg = Debug|x86
-		{4D1AD464-DDDD-4BC6-B6D1-807ACDF282C0}.Debug|x86.Build.0 = Debug|x86
-		{4D1AD464-DDDD-4BC6-B6D1-807ACDF282C0}.Release|x86.ActiveCfg = Release|x86
-		{4D1AD464-DDDD-4BC6-B6D1-807ACDF282C0}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

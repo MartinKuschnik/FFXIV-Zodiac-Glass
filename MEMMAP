@@ -6,10 +6,12 @@
          - open Cheat Engine
          - attach to FFXIV process
          - searcht to equipped weapon id
-         - ponter scan (unchecck: only find paths with static addresses & max level : 2)
-         - repeat it
-         
-         (dont forget-FFXIVItemSet(currrent 8) offset of last offset)
+         - pointer scan (uncheck: "only find paths with static addresses" & set max level to 2)
+         - relog
+         - do the search again
+         - switch to the pointer scan window and click "Pointer scan" -> "Rescan mem"
+         - repeat this until you get a address like "ffxiv.exe" + 221E2CB8  
+         - doppel click this address and you have your address
     -->
     <BaseAddressOffset>17912368</BaseAddressOffset>
     <Offsets>

@@ -5,13 +5,13 @@ FFXIV-Zodiac-Glass
 A tiny Final Fantasy XIV overlay that allows you to observe the progress of your Nexus and Zeta weapons.
 
 ## Who can use it?
-You have to play in frameless window mode to use this overlay. 
-I can implement a version that supports the window mode too, but not for one person.
+You have to play in [frameless] window mode to use this overlay. 
 
 ## How to use it?
-Only download the program and run it. No you should see a tiny overlay if you have equipped a supported weapon like this:
+Only download the program and run it. Now you should see a tiny overlay if you have equipped a supported weapon like this:
 
-<img title="NuGet" src="https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/blob/master/doc/pics/prev.jpg" alt="overlay"/>
+<img title="Zodiac Overlay" src="https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/blob/master/doc/pics/overlay_zodiac.jpg" />
+<img title="Zeta Overlay" src="https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/blob/master/doc/pics/overlay_zeta.jpg" />
 
 ## How to change the position?
 You can change the position by simple dragging it.
@@ -24,8 +24,5 @@ Currently there a two modes:
 
 ## How to download it?
 Go to [Releases](https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/releases) and download the current version.
-
-## Known issues:
-  - [Mouse curser problem](https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/issues/2)
 
 © 2015 Invisible Shield (InvisibleShield.XIV@gmail.com)

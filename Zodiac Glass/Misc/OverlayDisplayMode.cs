@@ -1,6 +1,6 @@
 ﻿namespace ZodiacGlass
 {
-    internal enum OverlayDisplayMode
+    public enum OverlayDisplayMode
     {
         Normal,
         Percentage

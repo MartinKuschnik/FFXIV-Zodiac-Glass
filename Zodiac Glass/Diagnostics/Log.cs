@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace ZodiacGlass.Diagnostics
 {
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+
     internal class Log : IDisposable
     {
         private readonly Lazy<StreamWriter> streamWriter;

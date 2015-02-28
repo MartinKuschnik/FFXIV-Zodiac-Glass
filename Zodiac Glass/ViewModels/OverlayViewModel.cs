@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using ZodiacGlass.FFXIV;
-
-namespace ZodiacGlass
+﻿namespace ZodiacGlass
 {
+    using System;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using ZodiacGlass.FFXIV;
+
     internal class OverlayViewModel : ViewModelBase
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private const int AdditionLifeTime = 20000;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private const int MaxLight = 2000;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private FFXIVMemoryReader glass;
@@ -57,6 +57,8 @@ namespace ZodiacGlass
                     this.observer.EquippedOffHandLightAmountChanged -= this.OnEquippedOffHandLightAmountChanged;
                     this.observer.EquippedMainHandIDChanged -= this.OnEquippedMainHandIDChanged;
                     this.observer.EquippedOffHandIDChanged -= this.OnEquippedOffHandIDChanged;
+                    this.observer.CurrentMahatmaChangeChanged -= this.OnCurrentMahatmaChangeChanged;
+                    this.observer.CurrentMahatmaChanged -= this.OnCurrentMahatmaChanged;
                     this.observer.Dispose();
                     this.observer = null;
                 }
@@ -71,6 +73,8 @@ namespace ZodiacGlass
                     this.observer.EquippedOffHandLightAmountChanged += this.OnEquippedOffHandLightAmountChanged;
                     this.observer.EquippedMainHandIDChanged += this.OnEquippedMainHandIDChanged;
                     this.observer.EquippedOffHandIDChanged += this.OnEquippedOffHandIDChanged;
+                    this.observer.CurrentMahatmaChangeChanged += this.OnCurrentMahatmaChangeChanged;
+                    this.observer.CurrentMahatmaChanged += this.OnCurrentMahatmaChanged;
                 }
 
 
@@ -81,6 +85,40 @@ namespace ZodiacGlass
                 this.NotifyPropertyChanged(() => this.SeparatorVisibility);
                 this.NotifyPropertyChanged(() => this.MainHandVisibility);
                 this.NotifyPropertyChanged(() => this.OffHandVisibility);
+            }
+        }
+
+        private void OnCurrentMahatmaChanged(object sender, ValueChangedEventArgs<FFXIVMahatma> e)
+        {
+            // necessary for switch from FFXIVMahatma.Full to FFXIVMahatma.None and FFXIVMahatma.Empty because the charge will not change
+            this.NotifyPropertyChanged(() => this.EquippedMainHandLightAmount);
+        }
+
+        private void OnCurrentMahatmaChangeChanged(object sender, ValueChangedEventArgs<int> e)
+        {
+            this.NotifyPropertyChanged(() => this.EquippedMainHandLightAmount);
+
+            if (!this.ignoreNextMainHandAddition)
+            {
+                if (this.glass != null)
+                {
+                    FFXIVItemSet itemSet = this.glass.ReadItemSet();
+
+                    if (Enum.IsDefined(typeof(FFXIVZodiacWeaponID), itemSet.Weapon.ID) && e.NewValue > e.OldValue)
+                    {
+                        this.MainHandAddition = e.NewValue - e.OldValue;
+
+                        Task.Factory.StartNew(() =>
+                        {
+                            Thread.Sleep(AdditionLifeTime);
+                            this.MainHandAddition = 0;
+                        });
+                    }
+                }
+            }
+            else
+            {
+                this.ignoreNextMainHandAddition = false;
             }
         }
 
@@ -97,17 +135,14 @@ namespace ZodiacGlass
                     if (Enum.IsDefined(typeof(FFXIVNovusWeaponID), itemSet.Weapon.ID))
                     {
                         this.MainHandAddition = e.NewValue - e.OldValue;
-                    }
-                    else if (Enum.IsDefined(typeof(FFXIVZodiacWeaponID), itemSet.Weapon.ID))
-                    {
-                        this.MainHandAddition = FFXIVZodiacWeaponLightCalculator.Calculate(e.NewValue) - FFXIVZodiacWeaponLightCalculator.Calculate(e.OldValue);
+
+                        Task.Factory.StartNew(() =>
+                        {
+                            Thread.Sleep(AdditionLifeTime);
+                            this.MainHandAddition = 0;
+                        });
                     }
 
-                    Task.Factory.StartNew(() =>
-                    {
-                        Thread.Sleep(AdditionLifeTime);
-                        this.MainHandAddition = 0;
-                    });
                 }
             }
             else
@@ -230,23 +265,40 @@ namespace ZodiacGlass
         {
             get
             {
-                int val = 0;
-
                 if (this.glass != null)
                 {
                     FFXIVItemSet itemSet = this.glass.ReadItemSet();
 
                     if (Enum.IsDefined(typeof(FFXIVNovusWeaponID), itemSet.Weapon.ID))
                     {
-                        val = itemSet.Weapon.LightAmount;
+                        switch (this.Mode)
+                        {
+                            case OverlayDisplayMode.Normal:
+                                return itemSet.Weapon.LightAmount.ToString();
+                            case OverlayDisplayMode.Percentage:
+                                return string.Format("{0} %", Math.Round(100 * (float)itemSet.Weapon.LightAmount / MaxLight, 2));
+                            default:
+                                return null;
+                        }
                     }
                     else if (Enum.IsDefined(typeof(FFXIVZodiacWeaponID), itemSet.Weapon.ID))
                     {
-                        val = FFXIVZodiacWeaponLightCalculator.Calculate(itemSet.Weapon.LightAmount);
+                        FFXIVWeapon weapon = itemSet.Weapon;
+                        int curMahatmas = weapon.Mahatmas.Count(m => m != FFXIVMahatma.None);
+
+                        switch (this.Mode)
+                        {
+                            case OverlayDisplayMode.Normal:
+                                return string.Format("{0}/{1} - {2}/{3}", curMahatmas, weapon.Mahatmas.Length, weapon.CurrentMahatma.Charge, FFXIVMahatma.Full.Charge);
+                            case OverlayDisplayMode.Percentage:
+                                return string.Format("{0}/{1} - {2} %", curMahatmas, weapon.Mahatmas.Length, Math.Round(weapon.CurrentMahatma.ChargePercentage, 2));
+                            default:
+                                return null;
+                        }
                     }
                 }
 
-                return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / MaxLightAmount, 2));
+                return null;
             }
         }
 
@@ -262,27 +314,7 @@ namespace ZodiacGlass
                     val = itemSet.Shield.LightAmount;
                 }
 
-                return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / MaxLightAmount, 2));
-            }
-        }
-
-        public float MaxLightAmount
-        {
-            get
-            {
-                if (this.glass != null)
-                {
-                    if (Enum.IsDefined(typeof(FFXIVNovusWeaponID), this.glass.ReadItemSet().Weapon.ID))
-                    {
-                        return 2000;
-                    }
-                    else if (Enum.IsDefined(typeof(FFXIVZodiacWeaponID), this.glass.ReadItemSet().Weapon.ID))
-                    {
-                        return FFXIVZodiacWeaponLightCalculator.MaxLightAmount;
-                    }
-                }
-
-                return float.MaxValue;
+                return this.Mode == OverlayDisplayMode.Normal ? val.ToString() : string.Format("{0} %", Math.Round(100 * (float)val / MaxLight, 2));
             }
         }
 

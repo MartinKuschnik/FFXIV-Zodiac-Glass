@@ -3,7 +3,7 @@
     /// <summary>
     /// Novus Weapon IDs.
     /// </summary>
-    internal enum FFXIVZodiacWeaponID
+    internal enum FFXIVZodiacWeaponID : int
     {
         /// <summary>
         /// Paladin Sword

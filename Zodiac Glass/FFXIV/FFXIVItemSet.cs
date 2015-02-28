@@ -1,17 +1,13 @@
 ﻿namespace ZodiacGlass.FFXIV
 {
-    using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
     using System.Runtime.InteropServices;
-    using System.Text;
-    
-    [StructLayout(LayoutKind.Explicit)]
+
+    [StructLayout(LayoutKind.Explicit, Size = FFXIVStructSizes.ItemSet)]
     internal unsafe struct FFXIVItemSet
     {
         [FieldOffset(0)]
-        public fixed byte raw[834]; // 8 + 13 * 64
+        public fixed byte raw[FFXIVStructSizes.ItemSet];
 
         [FieldOffset(8)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

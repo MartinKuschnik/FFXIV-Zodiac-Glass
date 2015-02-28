@@ -77,9 +77,9 @@
         private unsafe T Read<T>(void* p) where T : struct
         {
             byte[] buffer = new byte[Marshal.SizeOf(default(T))];
-            int readCount = 0;
+            int readCount;
 
-            NativeMethods.ReadProcessMemory(this.processHandel, (IntPtr)p, buffer, buffer.Length, ref readCount);
+            NativeMethods.TryReadProcessMemory(this.processHandel, (IntPtr)p, ref buffer, buffer.Length, out readCount);
 
             fixed (byte* pBuffer = &buffer[0])
             {

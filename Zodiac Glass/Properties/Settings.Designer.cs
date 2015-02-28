@@ -26,9 +26,9 @@ namespace ZodiacGlass.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
-        public global::System.Drawing.Point OverlayPosition {
+        public global::System.Windows.Point OverlayPosition {
             get {
-                return ((global::System.Drawing.Point)(this["OverlayPosition"]));
+                return ((global::System.Windows.Point)(this["OverlayPosition"]));
             }
             set {
                 this["OverlayPosition"] = value;

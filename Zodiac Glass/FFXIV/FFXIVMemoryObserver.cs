@@ -17,6 +17,10 @@
 
         private int equippedOffHandID;
 
+        private FFXIVMahatma currentMahatma;
+
+        private int currentMahatmaChange;
+
         public FFXIVMemoryObserver(FFXIVMemoryReader memoryReader)
         {
             this.memoryReader = memoryReader;
@@ -27,6 +31,8 @@
             this.equippedOffHandLightAmount = itemSet.Shield.LightAmount;
             this.equippedMainHandID = itemSet.Weapon.ID;
             this.equippedOffHandID = itemSet.Shield.ID;
+            this.currentMahatma = itemSet.Weapon.CurrentMahatma;
+            this.currentMahatmaChange = itemSet.Weapon.CurrentMahatma.Charge;
 
             this.timer = new Timer(this.OnTimerElapsed, null, 500, 500);
         }
@@ -38,6 +44,10 @@
         public event EventHandler<ValueChangedEventArgs<int>> EquippedMainHandIDChanged;
 
         public event EventHandler<ValueChangedEventArgs<int>> EquippedOffHandIDChanged;
+
+        public event EventHandler<ValueChangedEventArgs<FFXIVMahatma>> CurrentMahatmaChanged;
+
+        public event EventHandler<ValueChangedEventArgs<int>> CurrentMahatmaChangeChanged;
 
         public FFXIVMemoryReader MemoryReader
         {
@@ -53,6 +63,7 @@
             {
                 return this.equippedMainHandLightAmount;
             }
+
             set
             {
                 if (this.equippedMainHandLightAmount != value)
@@ -63,7 +74,7 @@
 
                     if (this.EquippedMainHandLightAmountChanged != null)
                         this.EquippedMainHandLightAmountChanged(this, new ValueChangedEventArgs<int>(oldValue, value));
-                    
+
                 }
 
             }
@@ -75,6 +86,7 @@
             {
                 return this.equippedOffHandLightAmount;
             }
+
             set
             {
                 if (this.equippedOffHandLightAmount != value)
@@ -97,6 +109,7 @@
             {
                 return this.equippedMainHandID;
             }
+
             set
             {
                 if (this.equippedMainHandID != value)
@@ -119,6 +132,7 @@
             {
                 return this.equippedOffHandID;
             }
+
             set
             {
                 if (this.equippedOffHandID != value)
@@ -129,12 +143,54 @@
 
                     if (this.EquippedOffHandIDChanged != null)
                         this.EquippedOffHandIDChanged(this, new ValueChangedEventArgs<int>(oldValue, value));
-
                 }
 
             }
         }
 
+        private FFXIVMahatma CurrentMahatma
+        {
+            get
+            {
+                return this.currentMahatma;
+            }
+
+            set
+            {
+                if (this.currentMahatma != value)
+                {
+                    FFXIVMahatma oldValue = this.currentMahatma;
+
+                    this.currentMahatma = value;
+
+                    if (this.CurrentMahatmaChanged != null)
+                        this.CurrentMahatmaChanged(this, new ValueChangedEventArgs<FFXIVMahatma>(oldValue, value));
+                }
+
+            }
+        }
+
+        private int CurrentMahatmaChange
+        {
+            get
+            {
+                return this.currentMahatmaChange;
+            }
+
+            set
+            {
+                if (this.currentMahatmaChange != value)
+                {
+                    int oldValue = this.currentMahatmaChange;
+
+                    this.currentMahatmaChange = value;
+
+                    if (this.CurrentMahatmaChangeChanged != null)
+                        this.CurrentMahatmaChangeChanged(this, new ValueChangedEventArgs<int>(oldValue, value));
+                }
+
+            }
+        }
 
         private void OnTimerElapsed(object state)
         {
@@ -146,12 +202,13 @@
                 this.EquippedOffHandID = itemSet.Shield.ID;
                 this.EquippedMainHandLightAmount = itemSet.Weapon.LightAmount;
                 this.EquippedOffHandLightAmount = itemSet.Shield.LightAmount;
+                this.CurrentMahatmaChange = itemSet.Weapon.CurrentMahatma.Charge;
+                this.CurrentMahatma = itemSet.Weapon.CurrentMahatma;
             }
             else
             {
                 this.timer.Dispose();
             }
-
         }
 
         public void Dispose()

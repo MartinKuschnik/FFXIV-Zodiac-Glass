@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ZodiacGlass
+﻿namespace ZodiacGlass
 {
     internal static class AssemblyProperties
     {
-        internal const string Version = "1.1.1502.25001"; // X.X.Year_Year_Month_Mont.Day_Day_BuildOfDayBuildOfDayBuildOfDay
+        internal const string Version = "1.3.1502.28000"; // X.X.Year_Year_Month_Mont.Day_Day_BuildOfDayBuildOfDayBuildOfDay
         internal const string Name = "Zodiac Glass";
         internal const string Copyright = "© 2015 Invisible Shield";
     }

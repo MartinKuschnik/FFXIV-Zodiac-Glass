@@ -3,11 +3,11 @@
     using System.Diagnostics;
     using System.Runtime.InteropServices;
 
-    [StructLayout(LayoutKind.Explicit, Size = 64)]
+    [StructLayout(LayoutKind.Explicit, Size = FFXIVStructSizes.Item)]
     internal unsafe struct FFXIVItem
     {
         [FieldOffset(0)]
-        private fixed byte raw[64];
+        private fixed byte raw[FFXIVStructSizes.Item];
 
         [FieldOffset(0)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

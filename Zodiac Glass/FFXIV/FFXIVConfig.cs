@@ -1,6 +1,5 @@
 ﻿namespace ZodiacGlass.FFXIV
 {
-    using System;
     using System.Diagnostics;
 
     internal struct FFXIVConfig
@@ -12,8 +11,7 @@
         {
             get { return this.screenMode ?? FFXIVScreenMode.Unknwon; }
             set { this.screenMode = value; }
-        }
-        
+        }        
 
     }
 }
