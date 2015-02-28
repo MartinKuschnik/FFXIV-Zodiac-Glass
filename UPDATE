@@ -4,7 +4,7 @@
   <Content>
     <File>
       <Source>https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/releases/download/v1.3.1503.01000/Zodiac.Glass.exe</Source>
-      <Target>Zodiac Glass.exe</Target>
+      <Target>Zodiac.Glass.exe</Target>
     </File>
   </Content>
 </Update>
