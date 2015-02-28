@@ -152,12 +152,12 @@
             // set initial pos
             NativeMethods.SetWindowPos(this.handle, IntPtr.Zero, (int)initialRelativePosition.X, (int)initialRelativePosition.Y, (int)this.Width, (int)this.Height, SetWindowPosFlags.SWP_NONE);
 
+            NativeMethods.SetParent(this.handle, this.process.MainWindowHandle);
+
             // pin the overlay window over the game window
             WindowStyle style = (WindowStyle)NativeMethods.GetWindowLong(handle, WindowLong.GWL_STYLE);
             NativeMethods.SetWindowLong(handle, WindowLong.GWL_STYLE, (IntPtr)(style |= ZodiacGlass.Native.WindowStyle.WS_CHILD));
             NativeMethods.SetWindowLong(handle, WindowLong.GWL_EXSTYLE, (IntPtr)WindowStyleEx.WS_EX_NOACTIVATE);
-
-            NativeMethods.SetParent(this.handle, this.process.MainWindowHandle);
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

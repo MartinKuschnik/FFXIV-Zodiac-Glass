@@ -9,6 +9,7 @@
         WindowStartupLocation="Manual"
         SizeToContent="WidthAndHeight"
         WindowStyle="None"
+        Cursor="pack://application:,,,/Zodiac Glass;component/Resources/cursors/arr-link.cur"
         Background="#01000000"
         AllowsTransparency="True"
         ResizeMode="NoResize">
@@ -22,8 +23,7 @@
                           Opacity="0.2"
                           BlurRadius="0" />
     </Window.Resources>
-    <StackPanel Orientation="Horizontal"
-                Cursor="pack://application:,,,/Zodiac Glass;component/Resources/cursors/arr-link.cur"                
+    <StackPanel Orientation="Horizontal"             
                 Visibility="{Binding OverlayVisibility}"
                 Height="24"
                 Margin="3,3,0,0"                
