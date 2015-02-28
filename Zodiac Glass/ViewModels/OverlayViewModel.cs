@@ -78,13 +78,13 @@
                 }
 
 
-                this.NotifyPropertyChanged(() => this.OverlayVisibility);
+                this.NotifyPropertyChanged(() => this.IsOverlayVisible);
                 this.NotifyPropertyChanged(() => this.ClassSymbolUri);
                 this.NotifyPropertyChanged(() => this.EquippedMainHandLightAmount);
                 this.NotifyPropertyChanged(() => this.EquippedOffHandLightAmount);
-                this.NotifyPropertyChanged(() => this.SeparatorVisibility);
-                this.NotifyPropertyChanged(() => this.MainHandVisibility);
-                this.NotifyPropertyChanged(() => this.OffHandVisibility);
+                this.NotifyPropertyChanged(() => this.IsSeparatorVisible);
+                this.NotifyPropertyChanged(() => this.IsMainHandVisible);
+                this.NotifyPropertyChanged(() => this.IsOffHandVisible);
             }
         }
 
@@ -173,23 +173,23 @@
 
         private void OnEquippedMainHandIDChanged(object sender, ValueChangedEventArgs<int> e)
         {
-            this.NotifyPropertyChanged(() => this.OverlayVisibility);
-            this.NotifyPropertyChanged(() => this.MainHandVisibility);
-            this.NotifyPropertyChanged(() => this.SeparatorVisibility);
+            this.NotifyPropertyChanged(() => this.IsOverlayVisible);
+            this.NotifyPropertyChanged(() => this.IsMainHandVisible);
+            this.NotifyPropertyChanged(() => this.IsSeparatorVisible);
             this.NotifyPropertyChanged(() => this.ClassSymbolUri);
             this.ignoreNextMainHandAddition = true;
         }
 
         private void OnEquippedOffHandIDChanged(object sender, ValueChangedEventArgs<int> e)
         {
-            this.NotifyPropertyChanged(() => this.OverlayVisibility);
-            this.NotifyPropertyChanged(() => this.OffHandVisibility);
-            this.NotifyPropertyChanged(() => this.SeparatorVisibility);
+            this.NotifyPropertyChanged(() => this.IsOverlayVisible);
+            this.NotifyPropertyChanged(() => this.IsOffHandVisible);
+            this.NotifyPropertyChanged(() => this.IsSeparatorVisible);
             this.NotifyPropertyChanged(() => this.ClassSymbolUri);
             this.ignoreNextOffHandAddition = true;
         }
 
-        public Uri ClassSymbolUri
+        public object ClassSymbolUri
         {
             get
             {
@@ -256,7 +256,7 @@
                         return new Uri(string.Format("pack://application:,,,/Zodiac Glass;component/Resources/classimages/{0}.png", className));
                 }
 
-                return null;
+                return DependencyProperty.UnsetValue;
             }
 
         }
@@ -348,7 +348,7 @@
                 {
                     this.mainHandAddition = value;
                     this.NotifyPropertyChanged(() => this.MainHandAddition);
-                    this.NotifyPropertyChanged(() => this.MainHandAdditionVisibility);
+                    this.NotifyPropertyChanged(() => this.IsMainHandAdditionVisible);
                 }
             }
         }
@@ -365,58 +365,76 @@
                 {
                     this.offHandAddition = value;
                     this.NotifyPropertyChanged(() => this.OffHandAddition);
-                    this.NotifyPropertyChanged(() => this.OffHandAdditionVisibility);
+                    this.NotifyPropertyChanged(() => this.IsOffHandAdditionVisible);
                 }
             }
         }
-        public Visibility MainHandAdditionVisibility
+        public bool IsMainHandAdditionVisible
         {
             get
             {
-                return this.MainHandVisibility == Visibility.Visible && this.mainHandAddition > 0 ? Visibility.Visible : Visibility.Collapsed;
+                return this.IsMainHandVisible && this.mainHandAddition > 0;
             }
         }
 
-        public Visibility OffHandAdditionVisibility
+        public bool IsOffHandAdditionVisible
         {
             get
             {
-                return this.OffHandVisibility == Visibility.Visible && this.offHandAddition > 0 ? Visibility.Visible : Visibility.Collapsed;
+                return this.IsOffHandVisible && this.offHandAddition > 0;
             }
         }
 
-        public Visibility SeparatorVisibility
+        public bool IsSeparatorVisible
         {
             get
             {
-                return this.MainHandVisibility == Visibility.Visible && this.OffHandVisibility == Visibility.Visible ? Visibility.Visible : Visibility.Collapsed;
+                return this.IsMainHandVisible && this.IsOffHandVisible;
             }
         }
 
-        public Visibility MainHandVisibility
+        public bool IsMainHandVisible
         {
             get
             {
-                return this.glass != null &&
-                    (Enum.IsDefined(typeof(FFXIVNovusWeaponID), this.glass.ReadItemSet().Weapon.ID)
-                        || Enum.IsDefined(typeof(FFXIVZodiacWeaponID), this.glass.ReadItemSet().Weapon.ID))
-                    ? Visibility.Visible : Visibility.Collapsed;
+                if (this.glass != null)
+                {
+                    FFXIVWeapon weapon = this.glass.ReadItemSet().Weapon;
+
+                    return weapon.IsNovusWeapon || weapon.IsZodiacWeapon;
+                }
+
+                return false;
             }
         }
 
-        public Visibility OffHandVisibility
+        public bool IsOffHandVisible
         {
             get
             {
-                return this.glass != null && (FFXIVNovusWeaponID)this.glass.ReadItemSet().Shield.ID == FFXIVNovusWeaponID.HolyShieldNovus ? Visibility.Visible : Visibility.Collapsed;
+                if (this.glass != null)
+                {
+                    FFXIVWeapon weapon = this.glass.ReadItemSet().Weapon;
+
+                    return weapon.IsNovusWeapon; // we only support IsOffHandVisible for the novus shield
+                }
+
+                return false;
             }
         }
 
-        public Visibility OverlayVisibility
+        public bool IsOverlayVisible
         {
             get
             {
-                return this.ClassSymbolUri != null ? Visibility.Visible : Visibility.Collapsed;
+                if (this.glass != null)
+                {
+                    FFXIVItemSet itemset = this.glass.ReadItemSet();
+
+                    return itemset.Weapon.IsNovusWeapon || itemset.Weapon.IsZodiacWeapon || itemset.Shield.IsNovusWeapon;
+                }
+
+                return false;
             }
         }
     }

@@ -3,15 +3,22 @@
     using System;
     using System.Diagnostics;
     using System.Reflection;
+    using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Interop;
+    using System.Windows.Media;
+    using System.Windows.Threading;
     using ZodiacGlass.FFXIV;
     using ZodiacGlass.Native;
     using WindowStyle = ZodiacGlass.Native.WindowStyle;
 
     public partial class OverlayWindow : Window, IOverlay
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
+
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Process process;
 
@@ -117,11 +124,19 @@
                 }
             }
         }
-        
+
         public Process Process
         {
             get { return this.process; }
-        }        
+        }
+
+        public bool IsVisable
+        {
+            get
+            {
+                return (this.ViewModel as OverlayViewModel).IsOverlayVisible;
+            }
+        }
 
         FFXIVMemoryReader IOverlay.MemoryReader
         {
@@ -197,6 +212,31 @@
                 else
                     this.DisplayMode = OverlayDisplayMode.Normal;
             }
+        }
+
+
+        public void Highlight(int sec)
+        {
+            Brush startBackground = this.Background;
+            Brush highlightColor = new SolidColorBrush(Color.FromArgb(150, 255, 0, 0));
+
+            Task.Factory.StartNew(() =>
+            {
+                for (int i = 0; i < sec * 2; i++)
+                {
+                    Thread.Sleep(500);
+
+                    if (i % 2 == 0)
+                    {
+                        this.dispatcher.Invoke((ThreadStart)(() => this.Background = highlightColor));
+                    }
+                    else
+                    {
+                        this.dispatcher.Invoke((ThreadStart)(() => this.Background = startBackground));
+                    }
+
+                }
+            });
         }
     }
 }

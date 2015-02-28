@@ -190,62 +190,22 @@
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "reddit.png"))).Stream);
             newItem.Click += (s, e) => Process.Start("http://www.reddit.com/r/ffxiv/comments/2gm1ru/nexus_light_information/");
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
-            
+
             this.notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
             newItem = new ToolStripMenuItem("Update Memory Addresses");
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "update.ico"))).Stream);
-            newItem.Click += (s, e) =>
-            {
-                try
-                {
-                    if (this.UpdateMemoryMap())
-                    {
-                        foreach (IOverlay overlay in this.overlays.ToArray())
-                        {
-                            this.ReCreateOverlay(overlay);
-                        }
-
-                        this.notifyIcon.ShowBalloonTip(2500, "Update successfully.", "I hope it works now\r\n\r\n   ( ͡° ͜ʖ ͡°)\r\n", System.Windows.Forms.ToolTipIcon.Info);
-                    }
-                    else
-                        this.notifyIcon.ShowBalloonTip(2500, "Update failed.", "No update available\r\n\r\n   （　´_ゝ`）\r\n", System.Windows.Forms.ToolTipIcon.Warning);
-                }
-                catch (WebException)
-                {
-                    this.notifyIcon.ShowBalloonTip(5000, "Update failed.", "Can't connect to update file on github.\r\nPlease check firewall.\r\n\r\n   （　´_ゝ`）\r\n", System.Windows.Forms.ToolTipIcon.Error);
-                }
-            };
+            newItem.Click += (s, e) => this.OnUpdateMemoryAddressesButtonClicked();
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
-            
+
             newItem = new ToolStripMenuItem("Reset Overlay Position");
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "reset.ico"))).Stream);
-            newItem.Click += (s, e) =>
-            {
-                switch (this.overlays.Count())
-                {
-                    case 0:
-                        break;
-                    case 1:
+            newItem.Click += (s, e) => this.OnResetOverlayButtonClicked();
+            this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
 
-                        var singleOverlay = this.overlays.FirstOrDefault();
-
-                        singleOverlay.Position = new System.Windows.Point(0, 0);
-
-                        // activate the game window
-                        Native.NativeMethods.SetForegroundWindow(singleOverlay.Process.MainWindowHandle);
-
-                        break;
-                    default:
-
-                        foreach (OverlayWindow overlay in this.overlays.ToArray())
-                        {
-                            overlay.Position = new Point(0, 0);
-                        }
-
-                        break;
-                }
-            };
+            newItem = new ToolStripMenuItem("You can't find the overlay?");
+            newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "help.ico"))).Stream);
+            newItem.Click += (s, e) => this.OnHelpFindOverlayButtonClicked();
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
 
             this.notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
@@ -587,6 +547,98 @@
 
             if (curScreanMode != FFXIVScreenMode.FramelessWindow && curScreanMode != FFXIVScreenMode.Window)
                 MessageBox.Show("FINAL FANTASY XIV have to run into a window mode!", "Window mode required!", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+        private void OnHelpFindOverlayButtonClicked()
+        {
+            const string msgCaption = "You can't find the overlay?";
+
+            IOverlay overlay = this.overlays.FirstOrDefault(o => !o.Process.HasExited);
+
+            if (overlay != null)
+            {
+                FFXIVItemSet itemSet = overlay.MemoryReader.ReadItemSet();
+
+                if (itemSet.Weapon != FFXIVWeapon.None)
+                {
+                    if (overlay.IsVisable)
+                    {
+                        if (MessageBox.Show(string.Format("You should see the overlay at the following position.\r\n X: {0} Y: {1}\r\nShould I highlight the overlay for a few seconds?", overlay.Position.X, overlay.Position.Y), msgCaption, MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                        {
+                            overlay.Highlight(10);
+                        }
+
+                        // activate the game window
+                        Native.NativeMethods.SetForegroundWindow(overlay.Process.MainWindowHandle);
+                    }
+                    else
+                    {
+                        MessageBox.Show(string.Format("You have not equipped a supported weapon.\r\n Weapon: {0}, Shield: {1}", itemSet.Weapon.ID, itemSet.Shield.ID), msgCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Can't find the equipped items. You're not logged on or the memory addresses has changed.", msgCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            else if (Process.GetProcessesByName(App.XIVProcessName).Any())
+            {
+                MessageBox.Show("The overlay was never created. It looks like a bug. Please look into the logs to get more details.", msgCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            else
+            {
+                MessageBox.Show("There is no FFXIV running. Start the game and try again.", msgCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
+        }
+
+        private void OnResetOverlayButtonClicked()
+        {
+            switch (this.overlays.Count())
+            {
+                case 0:
+                    break;
+                case 1:
+
+                    var singleOverlay = this.overlays.FirstOrDefault();
+
+                    singleOverlay.Position = new System.Windows.Point(0, 0);
+
+                    // activate the game window
+                    Native.NativeMethods.SetForegroundWindow(singleOverlay.Process.MainWindowHandle);
+
+                    break;
+                default:
+
+                    foreach (OverlayWindow overlay in this.overlays.ToArray())
+                    {
+                        overlay.Position = new Point(0, 0);
+                    }
+
+                    break;
+            }
+        }
+
+        private void OnUpdateMemoryAddressesButtonClicked()
+        {
+            try
+            {
+                if (this.UpdateMemoryMap())
+                {
+                    foreach (IOverlay overlay in this.overlays.ToArray())
+                    {
+                        this.ReCreateOverlay(overlay);
+                    }
+
+                    this.notifyIcon.ShowBalloonTip(2500, "Update successfully.", "I hope it works now\r\n\r\n   ( ͡° ͜ʖ ͡°)\r\n", System.Windows.Forms.ToolTipIcon.Info);
+                }
+                else
+                    this.notifyIcon.ShowBalloonTip(2500, "Update failed.", "No update available\r\n\r\n   （　´_ゝ`）\r\n", System.Windows.Forms.ToolTipIcon.Warning);
+            }
+            catch (WebException)
+            {
+                this.notifyIcon.ShowBalloonTip(5000, "Update failed.", "Can't connect to update file on github.\r\nPlease check firewall.\r\n\r\n   （　´_ゝ`）\r\n", System.Windows.Forms.ToolTipIcon.Error);
+            }
         }
 
         #endregion

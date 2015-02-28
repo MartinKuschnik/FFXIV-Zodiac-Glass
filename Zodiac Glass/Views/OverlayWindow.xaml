@@ -22,46 +22,47 @@
                           Color="Black"
                           Opacity="0.2"
                           BlurRadius="0" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
-    <StackPanel Orientation="Horizontal"             
-                Visibility="{Binding OverlayVisibility}"
+    <StackPanel Orientation="Horizontal"
+                Visibility="{Binding IsOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Height="24"
-                Margin="3,3,0,0"                
+                Margin="3"                
                 MouseLeftButtonUp="OnMouseLeftButtonUp"
                 MouseLeftButtonDown="OnMouseLeftButtonDown">
         <Image Height="24"
                Source="{Binding ClassSymbolUri}" />
         <TextBlock Foreground="#FFDED2B8"
                    Effect="{StaticResource TextShadow}"
-                   Visibility="{Binding MainHandVisibility}"
+                   Visibility="{Binding IsMainHandVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Text="{Binding EquippedMainHandLightAmount}"
                    FontWeight="SemiBold"
                    FontSize="16">
         </TextBlock>
         <TextBlock Foreground="#FFDED2B8"
                    Effect="{StaticResource TextShadow}"
-                   Visibility="{Binding MainHandAdditionVisibility}"
+                   Visibility="{Binding IsMainHandAdditionVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Text="{Binding MainHandAddition, StringFormat='(+{0})'}"
                    FontWeight="SemiBold"
                    FontSize="16">
         </TextBlock>
         <TextBlock Foreground="#FFDED2B8"
                    Effect="{StaticResource TextShadow}"
-                   Visibility="{Binding SeparatorVisibility}"
+                   Visibility="{Binding IsSeparatorVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Text=" | "
                    FontWeight="SemiBold"
                    FontSize="16">
         </TextBlock>
         <TextBlock Foreground="#FFDED2B8"
                    Effect="{StaticResource TextShadow}"
-                   Visibility="{Binding OffHandVisibility}"
+                   Visibility="{Binding IsOffHandVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Text="{Binding EquippedOffHandLightAmount}"
                    FontWeight="SemiBold"
                    FontSize="16">
         </TextBlock>
         <TextBlock Foreground="#FFDED2B8"
                    Effect="{StaticResource TextShadow}"
-                   Visibility="{Binding OffHandAdditionVisibility}"
+                   Visibility="{Binding IsOffHandAdditionVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                    Text="{Binding OffHandAddition, StringFormat='(+{0})'}"
                    FontWeight="SemiBold"
                    FontSize="16">

@@ -13,11 +13,15 @@
 
         OverlayDisplayMode DisplayMode { get; set; }
 
+        bool IsVisable { get; }
+
         Point Position { get; set; }
 
         Process Process { get; }
 
         FFXIVMemoryReader MemoryReader { get; set; }
+
+        void Highlight(int sec);
 
         void Show();
 

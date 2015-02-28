@@ -1,5 +1,6 @@
 ﻿namespace ZodiacGlass.FFXIV
 {
+    using System;
     using System.Diagnostics;
     using System.Runtime.InteropServices;
 
@@ -80,6 +81,22 @@
             }
         }
 
+        public bool IsZodiacWeapon
+        {
+            get 
+            {
+                return Enum.IsDefined(typeof(FFXIVZodiacWeaponID), this.id);
+            }
+        }
+
+        public bool IsNovusWeapon
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(FFXIVNovusWeaponID), this.id);
+            }
+        }
+
         public override int GetHashCode()
         {
             return this.ID.GetHashCode();
@@ -88,6 +105,16 @@
         public override bool Equals(object obj)
         {
             return obj is FFXIVWeapon && ((FFXIVWeapon)obj).id == this.id;
+        }
+
+        public static bool operator ==(FFXIVWeapon c1, FFXIVWeapon c2)
+        {
+            return c1.Equals(c2);
+        }
+
+        public static bool operator !=(FFXIVWeapon c1, FFXIVWeapon c2)
+        {
+            return !c1.Equals(c2);
         }
         
     }
