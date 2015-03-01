@@ -185,12 +185,17 @@
 
             ToolStripMenuItem newItem;
 
-            newItem = new ToolStripMenuItem("Bonus Light");
+            newItem = new ToolStripMenuItem("Nexus Bonus Light");
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "reddit.png"))).Stream);
             newItem.Click += (s, e) => Process.Start("http://www.reddit.com/live/tlfmtjl4fteo");
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
 
-            newItem = new ToolStripMenuItem("Light Info");
+            newItem = new ToolStripMenuItem("Zeta Bonus Light");
+            newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "reddit.png"))).Stream);
+            newItem.Click += (s, e) => Process.Start("http://www.reddit.com/live/ugvcoyhc6yma/");
+            this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
+
+            newItem = new ToolStripMenuItem("Nexus Light Info");
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "reddit.png"))).Stream);
             newItem.Click += (s, e) => Process.Start("http://www.reddit.com/r/ffxiv/comments/2gm1ru/nexus_light_information/");
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
