@@ -164,10 +164,10 @@
 
             this.handle = new WindowInteropHelper(this).Handle;
 
+            NativeMethods.SetParent(this.handle, this.process.MainWindowHandle);
+
             // set initial pos
             NativeMethods.SetWindowPos(this.handle, IntPtr.Zero, (int)initialRelativePosition.X, (int)initialRelativePosition.Y, (int)this.Width, (int)this.Height, SetWindowPosFlags.SWP_NONE);
-
-            NativeMethods.SetParent(this.handle, this.process.MainWindowHandle);
 
             // pin the overlay window over the game window
             WindowStyle style = (WindowStyle)NativeMethods.GetWindowLong(handle, WindowLong.GWL_STYLE);
