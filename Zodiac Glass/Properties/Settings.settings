@@ -2,14 +2,17 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ZodiacGlass.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="OverlayPosition" Type="System.Drawing.Point" Scope="User">
-      <Value Profile="(Default)">0, 0</Value>
+    <Setting Name="OverlayPosition" Type="System.Windows.Point" Scope="User">
+      <Value Profile="(Default)">0,0</Value>
     </Setting>
     <Setting Name="MemoryMap" Type="ZodiacGlass.FFXIV.FFXIVMemoryMap" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="OverlayDisplayMode" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-1</Value>
+    </Setting>
+    <Setting Name="OverlayPinned" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -17,6 +17,9 @@
     public partial class OverlayWindow : Window, IOverlay
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private const int HWND_TOPMOST = -1;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -29,7 +32,10 @@
         private bool mouseMovedAfterMouseLeftButtonDown;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Point initialRelativePosition;
+        private Point initialPosition;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private bool pinned = true;
 
         public OverlayWindow(Process process)
         {
@@ -53,14 +59,30 @@
             }
             set
             {
-                if (this.ViewModel.Mode != value)
-                {
+
                     OverlayDisplayMode oldValue = this.ViewModel.Mode;
 
                     this.ViewModel.Mode = value;
 
                     if (this.DisplayModeChanged != null)
                         this.DisplayModeChanged(this, new ValueChangedEventArgs<OverlayDisplayMode>(oldValue, value));
+                
+            }
+        }
+
+        public bool Pinned
+        {
+            get
+            {
+                return this.pinned;
+            }
+            set
+            {
+                if (this.pinned != value)
+                {
+                    this.pinned = value;
+
+                    this.UpdateWindow();
                 }
             }
         }
@@ -78,7 +100,7 @@
 
                     oberlayWindowRect = NativeMethods.GetWindowRect(this.handle);
 
-                    if (this.process != null)
+                    if (this.process != null && this.Pinned)
                     {
                         gameWindowRect = NativeMethods.GetWindowRect(this.process.MainWindowHandle);
 
@@ -96,7 +118,7 @@
                 }
                 else
                 {
-                    return this.initialRelativePosition;
+                    return this.initialPosition;
                 }
             }
 
@@ -104,26 +126,31 @@
             {
                 Point oldPosition = this.Position;
 
-                if (oldPosition != value)
+                if (this.handle != IntPtr.Zero)
                 {
-                    if (this.handle != IntPtr.Zero)
+                    if (this.pinned)
                     {
                         NativeMethods.SetWindowPos(this.handle, IntPtr.Zero, (int)value.X, (int)value.Y, (int)this.Width, (int)this.Height, SetWindowPosFlags.SWP_NONE);
                     }
                     else
                     {
-                        this.initialRelativePosition = value;
+                        NativeMethods.SetWindowPos(this.handle, (IntPtr)HWND_TOPMOST, (int)value.X, (int)value.Y, (int)this.Width, (int)this.Height, SetWindowPosFlags.SWP_NONE);
                     }
+                }
+                else
+                {
+                    this.initialPosition = value;
+                }
 
-                    var positionChangedEvent = this.PositionChanged;
+                var positionChangedEvent = this.PositionChanged;
 
-                    if (positionChangedEvent != null)
-                    {
-                        positionChangedEvent(this, new ValueChangedEventArgs<Point>(oldPosition, this.Position));
-                    }
+                if (positionChangedEvent != null)
+                {
+                    positionChangedEvent(this, new ValueChangedEventArgs<Point>(oldPosition, this.Position));
                 }
             }
         }
+
 
         public Process Process
         {
@@ -164,15 +191,64 @@
 
             this.handle = new WindowInteropHelper(this).Handle;
 
-            NativeMethods.SetParent(this.handle, this.process.MainWindowHandle);
-
             // set initial pos
-            NativeMethods.SetWindowPos(this.handle, IntPtr.Zero, (int)initialRelativePosition.X, (int)initialRelativePosition.Y, (int)this.Width, (int)this.Height, SetWindowPosFlags.SWP_NONE);
+            NativeMethods.SetWindowPos(this.handle, IntPtr.Zero, (int)initialPosition.X, (int)initialPosition.Y, (int)this.Width, (int)this.Height, SetWindowPosFlags.SWP_NONE);
 
-            // pin the overlay window over the game window
-            WindowStyle style = (WindowStyle)NativeMethods.GetWindowLong(handle, WindowLong.GWL_STYLE);
-            NativeMethods.SetWindowLong(handle, WindowLong.GWL_STYLE, (IntPtr)(style |= ZodiacGlass.Native.WindowStyle.WS_CHILD));
-            NativeMethods.SetWindowLong(handle, WindowLong.GWL_EXSTYLE, (IntPtr)WindowStyleEx.WS_EX_NOACTIVATE);
+            this.UpdateWindow();
+        }
+        
+        private void UpdateWindow()
+        {
+            if (this.handle != IntPtr.Zero)
+            {
+                WindowStyle style;
+
+                if (this.pinned)                
+                {
+                    this.Topmost = false;
+                    style = Native.WindowStyle.WS_CLIPSIBLINGS | Native.WindowStyle.WS_CLIPCHILDREN | Native.WindowStyle.WS_SYSMENU | Native.WindowStyle.WS_CHILD | Native.WindowStyle.WS_VISIBLE;
+                    NativeMethods.SetParent(this.handle, this.process.MainWindowHandle);
+
+                    // pin the overlay window over the game window
+                    NativeMethods.SetWindowLong(handle, WindowLong.GWL_STYLE, (IntPtr)style);
+                    NativeMethods.SetWindowLong(handle, WindowLong.GWL_EXSTYLE, (IntPtr)WindowStyleEx.WS_EX_NOACTIVATE);
+                }
+                else
+                {
+                    this.Topmost = true;
+                    style = Native.WindowStyle.WS_POPUP | Native.WindowStyle.WS_VISIBLE;
+                    NativeMethods.SetParent(this.handle, IntPtr.Zero);
+
+                    NativeMethods.SetWindowLong(handle, WindowLong.GWL_STYLE, (IntPtr)style);
+                    NativeMethods.SetWindowLong(handle, WindowLong.GWL_EXSTYLE, (IntPtr)(WindowStyleEx.WS_EX_LAYERED));
+
+                    NativeMethods.SetWindowPos(this.handle, (IntPtr)HWND_TOPMOST, (int)this.Left, (int)this.Top, (int)this.Width, (int)this.Height, SetWindowPosFlags.SWP_NONE);
+                }
+
+                this.Invalidate();
+            }
+        }
+
+        private void Invalidate()
+        {
+            // no idea why but this works (ToDo: find a better way)
+
+            OverlayDisplayMode resetValue = this.DisplayMode;
+
+            if (this.DisplayMode == OverlayDisplayMode.Normal)
+            {
+                this.DisplayMode = OverlayDisplayMode.Percentage;
+            }
+            else
+            {
+                this.DisplayMode = OverlayDisplayMode.Normal;
+            }
+
+            Task.Factory.StartNew(() =>
+            {
+                Thread.Sleep(10);
+                this.dispatcher.Invoke((ThreadStart)(() => this.DisplayMode = resetValue));
+            });
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

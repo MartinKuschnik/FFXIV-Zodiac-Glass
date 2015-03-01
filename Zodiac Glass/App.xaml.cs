@@ -27,6 +27,9 @@
         private const string XIVProcessName = "ffxiv";
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private const string imageRuiFormat = "pack://application:,,,/Zodiac Glass;component/Resources/{0}";
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Mutex mutex = new Mutex(true, "ZodiacGlass");
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -55,6 +58,9 @@
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool autoRestart;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private ToolStripMenuItem togglePinningToolStripMenuItem;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -168,8 +174,6 @@
 
         private void ConfigureNotifyIcon()
         {
-            const string imageRuiFormat = "pack://application:,,,/Zodiac Glass;component/Resources/{0}";
-
             using (Stream iconStream = Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "ZodiacGlass.ico"))).Stream)
             {
                 this.notifyIcon.Icon = new Icon(iconStream);
@@ -207,6 +211,16 @@
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "help.ico"))).Stream);
             newItem.Click += (s, e) => this.OnHelpFindOverlayButtonClicked();
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
+
+            newItem = new ToolStripMenuItem("Options");
+            newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "config.ico"))).Stream);
+            this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
+
+            togglePinningToolStripMenuItem = new ToolStripMenuItem("Overlay Pinning");
+            togglePinningToolStripMenuItem.Checked = Settings.Default.OverlayPinned;
+            togglePinningToolStripMenuItem.Image = this.UpdateTogglePinningToolStripMenuItemImage();
+            togglePinningToolStripMenuItem.Click += (s, e) => this.OnToggleOverlayPinningButtonClicked();
+            newItem.DropDownItems.Add(togglePinningToolStripMenuItem);
 
             this.notifyIcon.ContextMenuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
@@ -445,6 +459,7 @@
                 process.EnableRaisingEvents = true;
                 process.Exited += this.OnProcessExited;
 
+                overlay.Pinned = Settings.Default.OverlayPinned;
                 overlay.Position = Settings.Default.OverlayPosition;
                 overlay.PositionChanged += this.OnOverlayRelativePositionChangedChanged;
 
@@ -547,6 +562,32 @@
 
             if (curScreanMode != FFXIVScreenMode.FramelessWindow && curScreanMode != FFXIVScreenMode.Window)
                 MessageBox.Show("FINAL FANTASY XIV have to run into a window mode!", "Window mode required!", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+        private Image UpdateTogglePinningToolStripMenuItemImage()
+        {
+            if (this.togglePinningToolStripMenuItem.Checked)
+            {
+                return Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "pinned.ico"))).Stream);
+            }
+            else
+            {
+                return Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "unpinned.ico"))).Stream);
+            }
+        }
+
+        private void OnToggleOverlayPinningButtonClicked()
+        {
+            Settings.Default.OverlayPinned = !Settings.Default.OverlayPinned;
+            Settings.Default.Save();
+
+            foreach (IOverlay overlay in this.overlays)
+            {
+                overlay.Pinned = Settings.Default.OverlayPinned;
+            }
+
+            this.togglePinningToolStripMenuItem.Checked = !this.togglePinningToolStripMenuItem.Checked;
+            this.togglePinningToolStripMenuItem.Image = this.UpdateTogglePinningToolStripMenuItemImage();
         }
 
         private void OnHelpFindOverlayButtonClicked()

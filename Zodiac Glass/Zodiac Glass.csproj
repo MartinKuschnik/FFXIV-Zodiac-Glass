@@ -241,6 +241,15 @@
   <ItemGroup>
     <Resource Include="Resources\help.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\config.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\unpinned.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\pinned.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

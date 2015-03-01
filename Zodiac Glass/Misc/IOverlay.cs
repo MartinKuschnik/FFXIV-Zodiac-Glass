@@ -21,6 +21,8 @@
 
         FFXIVMemoryReader MemoryReader { get; set; }
 
+        bool Pinned { get; set; }
+
         void Highlight(int sec);
 
         void Show();
