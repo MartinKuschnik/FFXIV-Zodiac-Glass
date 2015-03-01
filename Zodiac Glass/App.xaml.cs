@@ -181,7 +181,7 @@
 
             ToolStripMenuItem newItem;
 
-            newItem = new ToolStripMenuItem("Bounus Light");
+            newItem = new ToolStripMenuItem("Bonus Light");
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "reddit.png"))).Stream);
             newItem.Click += (s, e) => Process.Start("http://www.reddit.com/live/tlfmtjl4fteo");
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
