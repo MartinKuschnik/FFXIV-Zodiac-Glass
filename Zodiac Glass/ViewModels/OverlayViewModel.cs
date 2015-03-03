@@ -26,7 +26,7 @@
         private FFXIVMemoryObserver observer;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private bool ignoreNextMainHandAddition;
+        private int ignoreNextMainHandAdditionCount;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool ignoreNextOffHandAddition;
@@ -98,7 +98,7 @@
         {
             this.NotifyPropertyChanged(() => this.EquippedMainHandLightAmount);
 
-            if (!this.ignoreNextMainHandAddition)
+            if (this.ignoreNextMainHandAdditionCount-- <= 0)
             {
                 if (this.glass != null)
                 {
@@ -116,17 +116,13 @@
                     }
                 }
             }
-            else
-            {
-                this.ignoreNextMainHandAddition = false;
-            }
         }
 
         private void OnEquippedMainHandLightAmountChanged(object sender, ValueChangedEventArgs<int> e)
         {
             this.NotifyPropertyChanged(() => this.EquippedMainHandLightAmount);
 
-            if (!this.ignoreNextMainHandAddition)
+            if (this.ignoreNextMainHandAdditionCount-- == 0)
             {
                 if (this.glass != null)
                 {
@@ -144,10 +140,6 @@
                     }
 
                 }
-            }
-            else
-            {
-                this.ignoreNextMainHandAddition = false;
             }
         }
 
@@ -177,7 +169,17 @@
             this.NotifyPropertyChanged(() => this.IsMainHandVisible);
             this.NotifyPropertyChanged(() => this.IsSeparatorVisible);
             this.NotifyPropertyChanged(() => this.ClassSymbolUri);
-            this.ignoreNextMainHandAddition = true;
+
+            FFXIVItemSet itemSet = this.glass.ReadItemSet();
+
+            if (itemSet.Weapon.IsNovusWeapon || itemSet.Shield.IsNovusWeapon)
+            {
+                this.ignoreNextMainHandAdditionCount = 1;
+            }
+            else if (itemSet.Weapon.IsZodiacWeapon)
+            {
+                this.ignoreNextMainHandAdditionCount = 2;
+            }
         }
 
         private void OnEquippedOffHandIDChanged(object sender, ValueChangedEventArgs<int> e)
