@@ -1,6 +1,11 @@
 FFXIV-Zodiac-Glass
 ==================
 
+## THIS PROJECT IS NO LONGER SUPPORTED!!!
+I will not longer support this project because of the release of Heavensward.
+If there is still a need for this tool, please poke me!
+
+
 ## What is FFXIV-Zodiac-Glass?
 A tiny Final Fantasy XIV overlay that allows you to observe the progress of your Nexus and Zeta weapons.
 
