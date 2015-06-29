@@ -3,7 +3,10 @@ FFXIV-Zodiac-Glass
 
 ## THIS PROJECT IS NO LONGER FULL SUPPORTED!!!
 I will no longer update the memory addresses automatically.
+
 But I will update those if I get multiple requests for it.
+
+DirectX 11 is also not supported!!!
 
 ## What is FFXIV-Zodiac-Glass?
 A tiny Final Fantasy XIV overlay that allows you to observe the progress of your Nexus and Zeta weapons.
