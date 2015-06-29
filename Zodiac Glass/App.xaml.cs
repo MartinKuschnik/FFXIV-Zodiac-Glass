@@ -27,6 +27,9 @@
         private const string XIVProcessName = "ffxiv";
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private const string XIVProcessNameWithDirectX11 = "ffxiv_dx11";
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private const string imageRuiFormat = "pack://application:,,,/Zodiac Glass;component/Resources/{0}";
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -546,7 +549,7 @@
 
         private void OnProcessStarted(object sender, ProcessEventArgs e)
         {
-            if (e.Process.ProcessName == App.XIVProcessName)
+            if (e.Process.ProcessName == (App.XIVProcessName) || e.Process.ProcessName == (App.XIVProcessNameWithDirectX11))
                 dispatcher.Invoke((ThreadStart)(() => this.CreateOverlay(e.Process)));
         }
 
