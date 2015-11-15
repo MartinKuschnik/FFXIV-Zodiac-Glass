@@ -8,6 +8,9 @@ But I will update those if I get multiple requests for it.
 
 DirectX 11 is also not supported!!!
 
+## avast Free Antivirus
+Its possible that avast Free Antivirus (maybe also other antivirus software) will interrupt this process and will never release the process. If that happens you have to restart your pc and define an exception rule for the FFXIV-Zodiac-Glass exe.
+
 ## What is FFXIV-Zodiac-Glass?
 A tiny Final Fantasy XIV overlay that allows you to observe the progress of your Nexus and Zeta weapons.
 
