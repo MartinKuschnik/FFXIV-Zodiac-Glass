@@ -9,22 +9,23 @@
     using System.Net;
     using System.Reflection;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Threading;
     using System.Xml.Serialization;
     using ZodiacGlass.Diagnostics;
     using ZodiacGlass.FFXIV;
+    using Icon = System.Drawing.Icon;
+    using Image = System.Drawing.Image;
     using NotifyIcon = System.Windows.Forms.NotifyIcon;
     using Settings = ZodiacGlass.Properties.Settings;
     using ToolStripMenuItem = System.Windows.Forms.ToolStripMenuItem;
     using Update = Updating.Update;
-    using Icon = System.Drawing.Icon;
-    using Image = System.Drawing.Image;
 
     public partial class App : Application
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private const string XIVProcessName = "ffxiv"; // ffxiv_dx11 for DirectX 11 (but ffxiv_dx11 is a x64 process and has differend mem adresses)
+        private const string XIVProcessName = "ffxiv"; // ffxiv_dx11 for DirectX 11 (but ffxiv_dx11 is a x64 process and has different mem addresses)
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private const string imageRuiFormat = "pack://application:,,,/Zodiac Glass;component/Resources/{0}";
@@ -67,7 +68,7 @@
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
             try
-            {
+            {                
                 // ensure one one instance of app is open
                 if (mutex.WaitOne(TimeSpan.Zero, true))
                 {
@@ -460,10 +461,10 @@
             try
             {
                 IOverlay overlay = new OverlayWindow(process);
-
+                
                 process.EnableRaisingEvents = true;
                 process.Exited += this.OnProcessExited;
-
+                
                 overlay.Pinned = Settings.Default.OverlayPinned;
                 overlay.Position = Settings.Default.OverlayPosition;
                 overlay.PositionChanged += this.OnOverlayRelativePositionChangedChanged;
@@ -474,7 +475,7 @@
                 overlay.DisplayModeChanged += this.OnOverlayDisplayModeChanged;
 
                 overlay.Show();
-
+                
                 this.overlays.Add(overlay);
 
                 this.CheckGameWindowMode(process);
@@ -547,7 +548,13 @@
         private void OnProcessStarted(object sender, ProcessEventArgs e)
         {
             if (e.Process.ProcessName == (App.XIVProcessName))
-                dispatcher.Invoke((ThreadStart)(() => this.CreateOverlay(e.Process)));
+            {
+                Task.Factory.StartNew(() => {
+                    // we have to wait until the game is initialized
+                    Thread.Sleep(5000);
+                    dispatcher.Invoke((ThreadStart)(() => this.CreateOverlay(e.Process)));
+                });
+            }
         }
 
         private void OnProcessExited(object sender, EventArgs e)

@@ -77,7 +77,6 @@
                     this.observer.CurrentMahatmaChanged += this.OnCurrentMahatmaChanged;
                 }
 
-
                 this.NotifyPropertyChanged(() => this.IsOverlayVisible);
                 this.NotifyPropertyChanged(() => this.ClassSymbolUri);
                 this.NotifyPropertyChanged(() => this.EquippedMainHandLightAmount);
