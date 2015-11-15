@@ -32,4 +32,4 @@ Currently there a two modes:
 ## How to download it?
 Go to [Releases](https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/releases) and download the current version.
 
-© 2015 Invisible Shield (InvisibleShield.XIV@gmail.com)
+© 2015 Martin Kuschnik
