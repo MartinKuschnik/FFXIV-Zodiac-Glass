@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <Update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Version>1.4.1506.28001</Version>
+  <Version>1.4.1511.20001</Version>
   <Content>
     <File>
-      <Source>https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/releases/download/v1.4.1506.28001/Zodiac.Glass.exe</Source>
+      <Source>https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/releases/download/v1.4.1511.20001/Zodiac.Glass.exe</Source>
       <Target>Zodiac.Glass.exe</Target>
     </File>
   </Content>
