@@ -35,10 +35,12 @@ Go to [Releases](https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/releases) 
 ## Troubleshooting
 - The program does not start (No Tray Icon visible):
 
-    - Please cheack you antivir software. (We saw this issue by users of avast Free Antivirus. Please create a wildcard and restart your system if you have this problem.)
+    - Please check your antivir software. (We saw this issue by users of avast Free Antivirus. Please create a wildcard and restart your system if you have this problem.)
+    
 - You can not see any overlay:
 
   - If you use the overlay in pinned mode (recommended) please check whether you have installed [Microsoft .NET Framework 4.6](https://www.microsoft.com/de-de/download/details.aspx?id=48130) or a later version.
+
   - Use the assistent to track down the reason.
 
       <img title="Zeta Overlay" src="https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/blob/master/doc/pics/context_menu_CanNotSeeOverlay.jpg" />
