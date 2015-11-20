@@ -14,5 +14,11 @@
     <Setting Name="OverlayPinned" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="WarnedAboutOverlayPinningNotWorkingWithCurrentRuntimeVersion" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowWarningIfGameModeIsNotSupported" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

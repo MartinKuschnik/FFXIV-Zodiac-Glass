@@ -4,4 +4,4 @@
 {$Copyright}
 
 Support:
-- https://github.com/InvisibleShield/FFXIV-Zodiac-Glass
+- https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.24627.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zodiac Glass", "Zodiac Glass\Zodiac Glass.csproj", "{CEF678D2-4FF4-4FCE-8B03-CC1DB468521C}"
 EndProject
@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{A4C1B7D3-69E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pics", "pics", "{DDC6E237-F429-48A5-B1B9-4A7801D68341}"
 	ProjectSection(SolutionItems) = preProject
+		doc\pics\context_menu_CanNotSeeOverlay.jpg = doc\pics\context_menu_CanNotSeeOverlay.jpg
 		doc\pics\notify_icon_context_menu.jpg = doc\pics\notify_icon_context_menu.jpg
 		doc\pics\overlay_zeta.jpg = doc\pics\overlay_zeta.jpg
 		doc\pics\overlay_zodiac.jpg = doc\pics\overlay_zodiac.jpg

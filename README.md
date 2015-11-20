@@ -15,13 +15,13 @@ Its possible that avast Free Antivirus (maybe also other antivirus software) wil
 A tiny Final Fantasy XIV overlay that allows you to observe the progress of your Nexus and Zeta weapons.
 
 ## Who can use it?
-You have to play in [frameless] window mode to use this overlay. 
+You have to play in a window mode to use this overlay. 
 
 ## How to use it?
 Only download the program and run it. Now you should see a tiny overlay if you have equipped a supported weapon like this:
 
-<img title="Zodiac Overlay" src="https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/blob/master/doc/pics/overlay_zodiac.jpg" />
-<img title="Zeta Overlay" src="https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/blob/master/doc/pics/overlay_zeta.jpg" />
+<img title="Zodiac Overlay" src="https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/blob/master/doc/pics/overlay_zodiac.jpg" />
+<img title="Zeta Overlay" src="https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/blob/master/doc/pics/overlay_zeta.jpg" />
 
 ## How to change the position?
 You can change the position by simple dragging it.
@@ -33,6 +33,6 @@ Currently there a two modes:
   - percentage value
 
 ## How to download it?
-Go to [Releases](https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/releases) and download the current version.
+Go to [Releases](https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/releases) and download the current version.
 
 © 2015 Martin Kuschnik

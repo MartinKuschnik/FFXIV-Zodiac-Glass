@@ -3,7 +3,7 @@
   <Version>1.4.1506.28001</Version>
   <Content>
     <File>
-      <Source>https://github.com/InvisibleShield/FFXIV-Zodiac-Glass/releases/download/v1.4.1506.28001/Zodiac.Glass.exe</Source>
+      <Source>https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/releases/download/v1.4.1506.28001/Zodiac.Glass.exe</Source>
       <Target>Zodiac.Glass.exe</Target>
     </File>
   </Content>

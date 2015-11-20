@@ -25,6 +25,9 @@
     public partial class App : Application
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public static Version CLRRuntimeVersionRequiredToUsePinnedMode = new Version(4, 0, 30319, 42000);
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private const string XIVProcessName = "ffxiv"; // ffxiv_dx11 for DirectX 11 (but ffxiv_dx11 is a x64 process and has different mem addresses)
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -68,7 +71,7 @@
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 
             try
-            {                
+            {
                 // ensure one one instance of app is open
                 if (mutex.WaitOne(TimeSpan.Zero, true))
                 {
@@ -222,8 +225,9 @@
             newItem.Image = Image.FromStream(Application.GetResourceStream(new Uri(string.Format(imageRuiFormat, "config.ico"))).Stream);
             this.notifyIcon.ContextMenuStrip.Items.Add(newItem);
 
-            togglePinningToolStripMenuItem = new ToolStripMenuItem("Overlay Pinning");
-            togglePinningToolStripMenuItem.Checked = Settings.Default.OverlayPinned;
+            togglePinningToolStripMenuItem = new ToolStripMenuItem(string.Format("Overlay Pinning{0}", Environment.Version < CLRRuntimeVersionRequiredToUsePinnedMode ? " (Microsoft .NET Framework 4.6 required)" : string.Empty));
+            togglePinningToolStripMenuItem.Enabled = Environment.Version >= CLRRuntimeVersionRequiredToUsePinnedMode;
+            togglePinningToolStripMenuItem.Checked = togglePinningToolStripMenuItem.Checked && Settings.Default.OverlayPinned;
             togglePinningToolStripMenuItem.Image = this.UpdateTogglePinningToolStripMenuItemImage();
             togglePinningToolStripMenuItem.Click += (s, e) => this.OnToggleOverlayPinningButtonClicked();
             newItem.DropDownItems.Add(togglePinningToolStripMenuItem);
@@ -272,7 +276,7 @@
         {
             try
             {
-                WebRequest request = HttpWebRequest.Create("https://raw.githubusercontent.com/InvisibleShield/FFXIV-Zodiac-Glass/master/UPDATE");
+                WebRequest request = HttpWebRequest.Create("https://raw.githubusercontent.com/MartinKuschnik/FFXIV-Zodiac-Glass/master/UPDATE");
 
                 using (Stream responseStream = request.GetResponse().GetResponseStream())
                 {
@@ -382,7 +386,7 @@
         {
             try
             {
-                WebRequest request = HttpWebRequest.Create("https://raw.githubusercontent.com/InvisibleShield/FFXIV-Zodiac-Glass/master/MEMMAP");
+                WebRequest request = HttpWebRequest.Create("https://raw.githubusercontent.com/MartinKuschnik/FFXIV-Zodiac-Glass/master/MEMMAP");
 
                 using (Stream responseStream = request.GetResponse().GetResponseStream())
                 {
@@ -432,24 +436,24 @@
 
             switch (processes.Count())
             {
-                case 0:
+            case 0:
 
-                    break;
-                case 1:
+                break;
+            case 1:
 
-                    Process singleProcess = processes.First();
-                    this.CreateOverlay(singleProcess);
+                Process singleProcess = processes.First();
+                this.CreateOverlay(singleProcess);
 
-                    // activate the game window
-                    Native.NativeMethods.SetForegroundWindow(singleProcess.MainWindowHandle);
+                // activate the game window
+                Native.NativeMethods.SetForegroundWindow(singleProcess.MainWindowHandle);
 
-                    break;
-                default:
+                break;
+            default:
 
-                    foreach (Process process in processes)
-                        this.CreateOverlay(process);
+                foreach (Process process in processes)
+                    this.CreateOverlay(process);
 
-                    break;
+                break;
             }
 
         }
@@ -461,21 +465,34 @@
             try
             {
                 IOverlay overlay = new OverlayWindow(process);
-                
+
                 process.EnableRaisingEvents = true;
                 process.Exited += this.OnProcessExited;
-                
+
+                if (Settings.Default.OverlayPinned && Environment.Version < CLRRuntimeVersionRequiredToUsePinnedMode && !Settings.Default.WarnedAboutOverlayPinningNotWorkingWithCurrentRuntimeVersion)
+                {
+                    MessageBox.Show(
+                        "You have installed a version of the Microsoft .NET Framework older than version 4.6.\r\nOverlay pinning is the recommended way but only supported for the .NET Framework 4.6 or newer.\r\nThe pinning will be disabled.\r\nPlease install Microsoft .NET Framework 4.6 (https://goo.gl/3uP54q) and reconfigure this option to use the overlay in the recommended way.",
+                        "Overlay pining not supported", 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Warning);
+
+                    Settings.Default.OverlayPinned = false;
+                    Settings.Default.WarnedAboutOverlayPinningNotWorkingWithCurrentRuntimeVersion = true;
+                    Settings.Default.Save();
+                }
+
                 overlay.Pinned = Settings.Default.OverlayPinned;
                 overlay.Position = Settings.Default.OverlayPosition;
                 overlay.PositionChanged += this.OnOverlayRelativePositionChangedChanged;
-
+                
                 overlay.DisplayMode = (OverlayDisplayMode)Settings.Default.OverlayDisplayMode;
                 overlay.MemoryReader = new FFXIVMemoryReader(process, this.currentMemoryMap);
 
                 overlay.DisplayModeChanged += this.OnOverlayDisplayModeChanged;
 
                 overlay.Show();
-                
+
                 this.overlays.Add(overlay);
 
                 this.CheckGameWindowMode(process);
@@ -572,8 +589,14 @@
 
             this.log.Write(LogLevel.Info, string.Format("CurrentScreenMode: {0}", curScreanMode));
 
-            if (curScreanMode != FFXIVScreenMode.FramelessWindow && curScreanMode != FFXIVScreenMode.Window)
-                MessageBox.Show("FINAL FANTASY XIV have to run into a window mode!", "Window mode required!", MessageBoxButton.OK, MessageBoxImage.Warning);
+            if (curScreanMode != FFXIVScreenMode.FramelessWindow && curScreanMode != FFXIVScreenMode.Window && Settings.Default.ShowWarningIfGameModeIsNotSupported)
+            {
+                if (MessageBox.Show("FINAL FANTASY XIV have to run into a window mode to work in all cases!\r\nWould you like to see this warning again?", "Window mode required!", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                {
+                    Settings.Default.ShowWarningIfGameModeIsNotSupported = false;
+                    Settings.Default.Save();
+                }
+            }
         }
 
         private Image UpdateTogglePinningToolStripMenuItemImage()
@@ -649,26 +672,26 @@
         {
             switch (this.overlays.Count())
             {
-                case 0:
-                    break;
-                case 1:
+            case 0:
+                break;
+            case 1:
 
-                    var singleOverlay = this.overlays.FirstOrDefault();
+                var singleOverlay = this.overlays.FirstOrDefault();
 
-                    singleOverlay.Position = new System.Windows.Point(0, 0);
+                singleOverlay.Position = new System.Windows.Point(0, 0);
 
-                    // activate the game window
-                    Native.NativeMethods.SetForegroundWindow(singleOverlay.Process.MainWindowHandle);
+                // activate the game window
+                Native.NativeMethods.SetForegroundWindow(singleOverlay.Process.MainWindowHandle);
 
-                    break;
-                default:
+                break;
+            default:
 
-                    foreach (OverlayWindow overlay in this.overlays.ToArray())
-                    {
-                        overlay.Position = new Point(0, 0);
-                    }
+                foreach (OverlayWindow overlay in this.overlays.ToArray())
+                {
+                    overlay.Position = new Point(0, 0);
+                }
 
-                    break;
+                break;
             }
         }
 
