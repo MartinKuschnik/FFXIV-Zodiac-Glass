@@ -25,22 +25,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pics", "pics", "{DDC6E237-F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mem_update_guide", "mem_update_guide", "{C95F93BF-8013-455F-A385-A5622FCB2EF4}"
 	ProjectSection(SolutionItems) = preProject
-		doc\pics\mem_update_guide\addresses_after_all_pointer_scans.jp = doc\pics\mem_update_guide\addresses_after_all_pointer_scans.jp
-		doc\pics\mem_update_guide\addresses_after_first_pointer_scan.jp = doc\pics\mem_update_guide\addresses_after_first_pointer_scan.jp
-		doc\pics\mem_update_guide\addresses_after_first_relog.jp = doc\pics\mem_update_guide\addresses_after_first_relog.jp
-		doc\pics\mem_update_guide\addresses_final.jp = doc\pics\mem_update_guide\addresses_final.jp
-		doc\pics\mem_update_guide\addresses_from_scan.jp = doc\pics\mem_update_guide\addresses_from_scan.jp
-		doc\pics\mem_update_guide\addresses_to_files.jp = doc\pics\mem_update_guide\addresses_to_files.jp
-		doc\pics\mem_update_guide\addresslist_after_adding_addresses_from_scan.jp = doc\pics\mem_update_guide\addresslist_after_adding_addresses_from_scan.jp
-		doc\pics\mem_update_guide\attach_to_process.jp = doc\pics\mem_update_guide\attach_to_process.jp
-		doc\pics\mem_update_guide\attach_to_process_2.jp = doc\pics\mem_update_guide\attach_to_process_2.jp
-		doc\pics\mem_update_guide\edit_pointer_address.jp = doc\pics\mem_update_guide\edit_pointer_address.jp
-		doc\pics\mem_update_guide\find_weapon_id.jp = doc\pics\mem_update_guide\find_weapon_id.jp
-		doc\pics\mem_update_guide\find_weapon_id_2.jp = doc\pics\mem_update_guide\find_weapon_id_2.jp
-		doc\pics\mem_update_guide\first_scan.jp = doc\pics\mem_update_guide\first_scan.jp
-		doc\pics\mem_update_guide\next_scan.jp = doc\pics\mem_update_guide\next_scan.jp
-		doc\pics\mem_update_guide\pointer_scan_options.jp = doc\pics\mem_update_guide\pointer_scan_options.jp
-		doc\pics\mem_update_guide\start_pointer_scan.jp = doc\pics\mem_update_guide\start_pointer_scan.jp
+		doc\pics\mem_update_guide\addresses_after_all_pointer_scans.jpg = doc\pics\mem_update_guide\addresses_after_all_pointer_scans.jpg
+		doc\pics\mem_update_guide\addresses_after_first_pointer_scan.jpg = doc\pics\mem_update_guide\addresses_after_first_pointer_scan.jpg
+		doc\pics\mem_update_guide\addresses_after_first_relog.jpg = doc\pics\mem_update_guide\addresses_after_first_relog.jpg
+		doc\pics\mem_update_guide\addresses_final.jpg = doc\pics\mem_update_guide\addresses_final.jpg
+		doc\pics\mem_update_guide\addresses_from_scan.jpg = doc\pics\mem_update_guide\addresses_from_scan.jpg
+		doc\pics\mem_update_guide\addresses_to_files.jpg = doc\pics\mem_update_guide\addresses_to_files.jpg
+		doc\pics\mem_update_guide\addresslist_after_adding_addresses_from_scan.jpg = doc\pics\mem_update_guide\addresslist_after_adding_addresses_from_scan.jpg
+		doc\pics\mem_update_guide\attach_to_process.jpg = doc\pics\mem_update_guide\attach_to_process.jpg
+		doc\pics\mem_update_guide\attach_to_process_2.jpg = doc\pics\mem_update_guide\attach_to_process_2.jpg
+		doc\pics\mem_update_guide\edit_pointer_address.jpg = doc\pics\mem_update_guide\edit_pointer_address.jpg
+		doc\pics\mem_update_guide\find_weapon_id.jpg = doc\pics\mem_update_guide\find_weapon_id.jpg
+		doc\pics\mem_update_guide\find_weapon_id_2.jpg = doc\pics\mem_update_guide\find_weapon_id_2.jpg
+		doc\pics\mem_update_guide\first_scan.jpg = doc\pics\mem_update_guide\first_scan.jpg
+		doc\pics\mem_update_guide\next_scan.jpg = doc\pics\mem_update_guide\next_scan.jpg
+		doc\pics\mem_update_guide\pointer_scan_options.jpg = doc\pics\mem_update_guide\pointer_scan_options.jpg
+		doc\pics\mem_update_guide\start_pointer_scan.jpg = doc\pics\mem_update_guide\start_pointer_scan.jpg
 	EndProjectSection
 EndProject
 Global
