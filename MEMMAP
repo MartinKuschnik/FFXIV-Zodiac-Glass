@@ -1,21 +1,9 @@
 <?xml version="1.0"?>
 <FFXIVMemoryMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ItemSetPointer>
-    <!--
-        How to update:
-         - open Cheat Engine
-         - attach to FFXIV process
-         - searcht to equipped weapon id
-         - pointer scan (uncheck: "only find paths with static addresses" & set max level to 2)
-         - relog
-         - do the search again
-         - switch to the pointer scan window and click "Pointer scan" -> "Rescan mem"
-         - repeat this until you get a address like "ffxiv.exe" + 221E2CB8  
-         - doppel click this address and you have your address
-    -->
-    <BaseAddressOffset>17017128</BaseAddressOffset>
+    <BaseAddressOffset>17029416</BaseAddressOffset>
     <Offsets>
-      <int>64</int>
+      <int>464</int>
       <int>0</int>
     </Offsets>
   </ItemSetPointer>
