@@ -8,9 +8,6 @@ But I will update those if I get multiple requests for it.
 
 DirectX 11 is also not supported!!!
 
-## avast Free Antivirus
-Its possible that avast Free Antivirus (maybe also other antivirus software) will interrupt this process and will never release the process. If that happens you have to restart your pc and define an exception rule for the FFXIV-Zodiac-Glass exe.
-
 ## What is FFXIV-Zodiac-Glass?
 A tiny Final Fantasy XIV overlay that allows you to observe the progress of your Nexus and Zeta weapons.
 
@@ -34,5 +31,18 @@ Currently there a two modes:
 
 ## How to download it?
 Go to [Releases](https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/releases) and download the current version.
+
+## Troubleshooting
+- The program does not start (No Tray Icon visible):
+
+    - Please check your antivir software. (We saw this issue by users of avast Free Antivirus. Please create a wildcard and restart your system if you have this problem.)
+    
+- You can not see any overlay:
+
+  - If you use the overlay in pinned mode (recommended) please check whether you have installed [Microsoft .NET Framework 4.6](https://www.microsoft.com/de-de/download/details.aspx?id=48130) or a later version.
+
+  - Use the assistent to track down the reason.
+
+      <img title="Zeta Overlay" src="https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/blob/master/doc/pics/context_menu_CanNotSeeOverlay.jpg" />
 
 © 2015 Martin Kuschnik
