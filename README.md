@@ -4,7 +4,7 @@ FFXIV-Zodiac-Glass
 ## THIS PROJECT IS NO LONGER FULL SUPPORTED!!!
 I will no longer update the memory addresses automatically.
 
-But I will update those if I get multiple requests for it.
+You can use the [Memory Address Update Guide](https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/wiki/Memory-Address-Update-Guide) to update the memory addresses and request a merge. I will do such an update by myself only if I got multiple requests.
 
 DirectX 11 is also not supported!!!
 
@@ -45,4 +45,4 @@ Go to [Releases](https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/releases) 
 
       <img title="Zeta Overlay" src="https://github.com/MartinKuschnik/FFXIV-Zodiac-Glass/blob/master/doc/pics/context_menu_CanNotSeeOverlay.jpg" />
 
-© 2015 Martin Kuschnik
+© 2016 Martin Kuschnik
