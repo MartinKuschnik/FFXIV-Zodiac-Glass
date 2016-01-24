@@ -6,7 +6,7 @@
     public class FFXIVMemoryMap
     {
         private static readonly Lazy<FFXIVMemoryMap> _default = new Lazy<FFXIVMemoryMap>(() => new FFXIVMemoryMap() { ItemSetPointer =
-            new FFXIVPointer() { BaseAddressOffset = 0x0103D928, Offsets = new int[] { 0x1d0, 0x0 } }
+            new FFXIVPointer() { BaseAddressOffset = 0x0103D928, Offsets = new int[] { 0x40, 0x0 } }
         });
 
         public static FFXIVMemoryMap Default
