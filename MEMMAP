@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <FFXIVMemoryMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ItemSetPointer>
-    <BaseAddressOffset>17029416</BaseAddressOffset>
+    <BaseAddressOffset>17356584</BaseAddressOffset>
     <Offsets>
       <int>64</int>
-      <int>0</int>
+      <int>8</int>
     </Offsets>
   </ItemSetPointer>
 </FFXIVMemoryMap>
