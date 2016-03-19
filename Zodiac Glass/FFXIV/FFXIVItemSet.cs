@@ -13,7 +13,7 @@
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly FFXIVWeapon weapon;
 
-        [FieldOffset(72)]
+        [FieldOffset(64)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly FFXIVWeapon shield;
 
